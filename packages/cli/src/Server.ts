@@ -66,6 +66,7 @@ import {
 	GENERATED_STATIC_DIR,
 	inDevelopment,
 	inE2ETests,
+	LICENSE_FEATURES,
 	N8N_VERSION,
 	RESPONSE_ERROR_MESSAGES,
 	TEMPLATES_DIR,
@@ -148,6 +149,7 @@ import { License } from './License';
 import {
 	getStatusUsingPreviousExecutionStatusMethod,
 	isAdvancedExecutionFiltersEnabled,
+	isDebugInEditorLicensed,
 } from './executions/executionHelpers';
 import { getSamlLoginLabel, isSamlLoginEnabled, isSamlLicensed } from './sso/saml/samlHelpers';
 import { SamlController } from './sso/saml/routes/saml.controller.ee';
@@ -310,6 +312,8 @@ export class Server extends AbstractServer {
 				variables: false,
 				sourceControl: false,
 				auditLogs: false,
+				showNonProdBanner: false,
+				debugInEditor: false,
 			},
 			hideUsagePage: config.getEnv('hideUsagePage'),
 			license: {
@@ -320,6 +324,9 @@ export class Server extends AbstractServer {
 			},
 			banners: {
 				dismissed: [],
+			},
+			ai: {
+				enabled: config.getEnv('ai.enabled'),
 			},
 		};
 	}
@@ -402,6 +409,15 @@ export class Server extends AbstractServer {
 	 * Returns the current settings for the frontend
 	 */
 	getSettingsForFrontend(): IN8nUISettings {
+		// Update all urls, in case `WEBHOOK_URL` was updated by `--tunnel`
+		const instanceBaseUrl = getInstanceBaseUrl();
+		this.frontendSettings.urlBaseWebhook = WebhookHelpers.getWebhookBaseUrl();
+		this.frontendSettings.urlBaseEditor = instanceBaseUrl;
+		this.frontendSettings.oauthCallbackUrls = {
+			oauth1: `${instanceBaseUrl}/${this.restEndpoint}/oauth1-credential/callback`,
+			oauth2: `${instanceBaseUrl}/${this.restEndpoint}/oauth2-credential/callback`,
+		};
+
 		// refresh user management status
 		Object.assign(this.frontendSettings.userManagement, {
 			quota: Container.get(License).getUsersLimit(),
@@ -430,6 +446,10 @@ export class Server extends AbstractServer {
 			advancedExecutionFilters: isAdvancedExecutionFiltersEnabled(),
 			variables: isVariablesEnabled(),
 			sourceControl: isSourceControlLicensed(),
+			showNonProdBanner: Container.get(License).isFeatureEnabled(
+				LICENSE_FEATURES.SHOW_NON_PROD_BANNER,
+			),
+			debugInEditor: isDebugInEditorLicensed(),
 		});
 
 		if (isLdapEnabled()) {
@@ -470,7 +490,7 @@ export class Server extends AbstractServer {
 		const controllers: object[] = [
 			new EventBusController(),
 			new AuthController({ config, internalHooks, repositories, logger, postHog }),
-			new OwnerController({ config, internalHooks, repositories, logger }),
+			new OwnerController({ config, internalHooks, repositories, logger, postHog }),
 			new MeController({ externalHooks, internalHooks, repositories, logger }),
 			new NodeTypesController({ config, nodeTypes }),
 			new PasswordResetController({
@@ -482,7 +502,7 @@ export class Server extends AbstractServer {
 				logger,
 				jwtService,
 			}),
-			new TagsController({ config, repositories, externalHooks }),
+			Container.get(TagsController),
 			new TranslationController(config, this.credentialTypes),
 			new UsersController({
 				config,
