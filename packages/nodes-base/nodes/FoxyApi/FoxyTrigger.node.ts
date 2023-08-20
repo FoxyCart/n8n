@@ -1,10 +1,10 @@
-import { IHookFunctions, IWebhookFunctions } from 'n8n-core';
-
-import { IDataObject, INodeType, INodeTypeDescription, IWebhookResponseData } from 'n8n-workflow';
-
+import type {
+	IWebhookFunctions,
+	INodeType,
+	INodeTypeDescription,
+	IWebhookResponseData,
+} from 'n8n-workflow';
 // import { foxyApiRequest } from './GenericFunctions';
-
-import { snakeCase } from 'change-case';
 
 export class FoxyTrigger implements INodeType {
 	description: INodeTypeDescription = {
