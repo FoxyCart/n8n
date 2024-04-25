@@ -1,6 +1,7 @@
 import dateformat from 'dateformat';
 import type { IDataObject } from 'n8n-workflow';
 import { jsonParse } from 'n8n-workflow';
+import { isObject } from '@/utils/objectUtils';
 
 /*
 	Constants and utility functions than can be used to manipulate different data types and objects
@@ -10,15 +11,11 @@ const SI_SYMBOL = ['', 'k', 'M', 'G', 'T', 'P', 'E'];
 
 export const omit = (keyToOmit: string, { [keyToOmit]: _, ...remainder }) => remainder;
 
-export function isObjectLiteral(maybeObject: unknown): maybeObject is { [key: string]: string } {
-	return typeof maybeObject === 'object' && maybeObject !== null && !Array.isArray(maybeObject);
-}
-
 export function isJsonKeyObject(item: unknown): item is {
 	json: unknown;
 	[otherKeys: string]: unknown;
 } {
-	if (!isObjectLiteral(item)) return false;
+	if (!isObject(item)) return false;
 
 	return Object.keys(item).includes('json');
 }
@@ -26,11 +23,10 @@ export function isJsonKeyObject(item: unknown): item is {
 export const isEmpty = (value?: unknown): boolean => {
 	if (!value && value !== 0) return true;
 	if (Array.isArray(value)) {
-		if (!value.length) return true;
-		return value.every(isEmpty);
+		return !value.length || value.every(isEmpty);
 	}
 	if (typeof value === 'object') {
-		return Object.values(value).every(isEmpty);
+		return !Object.keys(value).length || Object.values(value).every(isEmpty);
 	}
 	return false;
 };
@@ -159,3 +155,12 @@ export const isValidDate = (input: string | number | Date): boolean => {
 
 export const getObjectKeys = <T extends object, K extends keyof T>(o: T): K[] =>
 	Object.keys(o) as K[];
+
+/**
+ * Converts a string to a number if possible. If not it returns the original string.
+ * For a string to be converted to a number it has to contain only digits.
+ * @param value The value to convert to a number
+ */
+export const tryToParseNumber = (value: string): number | string => {
+	return isNaN(+value) ? value : +value;
+};

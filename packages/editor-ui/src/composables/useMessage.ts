@@ -10,7 +10,7 @@ export function useMessage() {
 	};
 
 	async function alert(
-		message: string,
+		message: ElMessageBoxOptions['message'],
 		configOrTitle?: string | ElMessageBoxOptions,
 		config?: ElMessageBoxOptions,
 	) {
@@ -21,13 +21,15 @@ export function useMessage() {
 		};
 
 		if (typeof configOrTitle === 'string') {
-			return MessageBox.alert(message, configOrTitle, resolvedConfig).catch(handleCancelOrClose);
+			return await MessageBox.alert(message, configOrTitle, resolvedConfig).catch(
+				handleCancelOrClose,
+			);
 		}
-		return MessageBox.alert(message, resolvedConfig).catch(handleCancelOrClose);
+		return await MessageBox.alert(message, resolvedConfig).catch(handleCancelOrClose);
 	}
 
 	async function confirm(
-		message: string,
+		message: ElMessageBoxOptions['message'],
 		configOrTitle?: string | ElMessageBoxOptions,
 		config?: ElMessageBoxOptions,
 	): Promise<MessageBoxConfirmResult> {
@@ -41,17 +43,17 @@ export function useMessage() {
 		};
 
 		if (typeof configOrTitle === 'string') {
-			return MessageBox.confirm(message, configOrTitle, resolvedConfig).catch(
+			return await (MessageBox.confirm(message, configOrTitle, resolvedConfig).catch(
 				handleCancelOrClose,
-			) as unknown as Promise<MessageBoxConfirmResult>;
+			) as unknown as Promise<MessageBoxConfirmResult>);
 		}
-		return MessageBox.confirm(message, resolvedConfig).catch(
+		return await (MessageBox.confirm(message, resolvedConfig).catch(
 			handleCancelOrClose,
-		) as unknown as Promise<MessageBoxConfirmResult>;
+		) as unknown as Promise<MessageBoxConfirmResult>);
 	}
 
 	async function prompt(
-		message: string,
+		message: ElMessageBoxOptions['message'],
 		configOrTitle?: string | ElMessageBoxOptions,
 		config?: ElMessageBoxOptions,
 	) {
@@ -62,9 +64,11 @@ export function useMessage() {
 		};
 
 		if (typeof configOrTitle === 'string') {
-			return MessageBox.prompt(message, configOrTitle, resolvedConfig).catch(handleCancelOrClose);
+			return await MessageBox.prompt(message, configOrTitle, resolvedConfig).catch(
+				handleCancelOrClose,
+			);
 		}
-		return MessageBox.prompt(message, resolvedConfig).catch(handleCancelOrClose);
+		return await MessageBox.prompt(message, resolvedConfig).catch(handleCancelOrClose);
 	}
 
 	return {

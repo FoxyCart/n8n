@@ -1,18 +1,18 @@
-import type { OptionsWithUri } from 'request';
-
 import type {
 	IDataObject,
 	IExecuteFunctions,
 	IHookFunctions,
 	ILoadOptionsFunctions,
 	IOAuth2Options,
+	IHttpRequestMethods,
+	IRequestOptions,
 } from 'n8n-workflow';
 
 import { snakeCase } from 'change-case';
 
 export async function shopifyApiRequest(
 	this: IHookFunctions | IExecuteFunctions | ILoadOptionsFunctions,
-	method: string,
+	method: IHttpRequestMethods,
 	resource: string,
 
 	body: any = {},
@@ -35,7 +35,7 @@ export async function shopifyApiRequest(
 		credentials = await this.getCredentials('shopifyOAuth2Api');
 	}
 
-	const options: OptionsWithUri = {
+	const options: IRequestOptions = {
 		method,
 		qs: query,
 		uri: uri || `https://${credentials.shopSubdomain}.myshopify.com/admin/api/2019-10${resource}`,
@@ -64,7 +64,21 @@ export async function shopifyApiRequest(
 		delete options.qs;
 	}
 
-	return this.helpers.requestWithAuthentication.call(this, credentialType, options, {
+	// Only limit and fields are allowed for page_info links
+	// https://shopify.dev/docs/api/usage/pagination-rest#limitations-and-considerations
+	if (uri && uri.includes('page_info')) {
+		options.qs = {};
+
+		if (query.limit) {
+			options.qs.limit = query.limit;
+		}
+
+		if (query.fields) {
+			options.qs.fields = query.fields;
+		}
+	}
+
+	return await this.helpers.requestWithAuthentication.call(this, credentialType, options, {
 		oauth2: oAuth2Options,
 	});
 }
@@ -72,7 +86,7 @@ export async function shopifyApiRequest(
 export async function shopifyApiRequestAllItems(
 	this: IHookFunctions | IExecuteFunctions | ILoadOptionsFunctions,
 	propertyName: string,
-	method: string,
+	method: IHttpRequestMethods,
 	resource: string,
 
 	body: any = {},

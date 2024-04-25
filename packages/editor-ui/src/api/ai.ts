@@ -2,11 +2,9 @@ import type { IRestApiContext, Schema } from '@/Interface';
 import { makeRestApiRequest } from '@/utils/apiUtils';
 import type { IDataObject } from 'n8n-workflow';
 
-type Usage = {
-	prompt_tokens: number;
-	completion_tokens: number;
-	total_tokens: number;
-};
+export interface DebugErrorPayload {
+	error: Error;
+}
 
 export async function generateCodeForPrompt(
 	ctx: IRestApiContext,
@@ -20,15 +18,29 @@ export async function generateCodeForPrompt(
 		context: {
 			schema: Array<{ nodeName: string; schema: Schema }>;
 			inputSchema: { nodeName: string; schema: Schema };
+			pushRef: string;
+			ndvPushRef: string;
 		};
 		model: string;
 		n8nVersion: string;
 	},
-): Promise<{ code: string; usage: Usage }> {
-	return makeRestApiRequest(ctx, 'POST', '/ask-ai', {
+): Promise<{ code: string }> {
+	return await makeRestApiRequest(ctx, 'POST', '/ask-ai', {
 		question,
 		context,
 		model,
 		n8nVersion,
 	} as IDataObject);
 }
+
+export const debugError = async (
+	context: IRestApiContext,
+	payload: DebugErrorPayload,
+): Promise<{ message: string }> => {
+	return await makeRestApiRequest(
+		context,
+		'POST',
+		'/ai/debug-error',
+		payload as unknown as IDataObject,
+	);
+};
