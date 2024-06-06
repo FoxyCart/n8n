@@ -14,6 +14,6 @@ export const authenticatedMiddleware: RouterMiddleware<AuthenticatedPermissionOp
 		const redirect =
 			to.query.redirect ??
 			encodeURIComponent(`${window.location.pathname}${window.location.search}`);
-		return next({ name: VIEWS.SIGNIN, query: { redirect } });
+		window.location.href = `/signin?redirect=${redirect}`;
 	}
 };
