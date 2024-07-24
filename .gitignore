@@ -15,6 +15,7 @@ _START_PACKAGE
 !.vscode/settings.default.json
 .idea
 nodelinter.config.json
+<<<<<<< HEAD
 **/package-lock.json
 packages/**/.turbo
 *.tsbuildinfo
@@ -22,6 +23,14 @@ cypress/videos/*
 cypress/screenshots/*
 cypress/downloads/*
 *.swp
+<<<<<<< HEAD
 CHANGELOG-*.md
 *.mdx
 build-storybook.log
+=======
+=======
+packages/*/package-lock.json
+packages/*/.turbo
+package-lock.json
+>>>>>>> a11c974e36007b04e66f1ae408ff2049018e8a59
+>>>>>>> 6c3d9cf65f5b9d974d226618cdc2683773d533d0

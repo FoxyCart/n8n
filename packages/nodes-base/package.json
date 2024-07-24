@@ -116,6 +116,7 @@
       "dist/credentials/FormIoApi.credentials.js",
       "dist/credentials/FormstackApi.credentials.js",
       "dist/credentials/FormstackOAuth2Api.credentials.js",
+      "dist/credentials/FoxyJwtApi.credentials.js",
       "dist/credentials/FortiGateApi.credentials.js",
       "dist/credentials/FoxyJwtApi.credentials.js",
       "dist/credentials/FreshdeskApi.credentials.js",

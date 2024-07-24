@@ -45,9 +45,13 @@ export const uiProperties = [
 		required: false,
 		displayOptions: {
 			show: {
+<<<<<<< HEAD
 				method: [
 					'get',
 				],
+=======
+				method: ['get'],
+>>>>>>> 6c3d9cf65f5b9d974d226618cdc2683773d533d0
 			},
 		},
 		description: 'Additional Query String for Get Method.',
@@ -60,11 +64,15 @@ export const uiProperties = [
 		placeholder: 'Should be a Valid JSON',
 		displayOptions: {
 			show: {
+<<<<<<< HEAD
 				method: [
 					'post',
 					'patch',
 					'put',
 				],
+=======
+				method: ['post', 'patch', 'put'],
+>>>>>>> 6c3d9cf65f5b9d974d226618cdc2683773d533d0
 			},
 		},
 		typeOptions: {
