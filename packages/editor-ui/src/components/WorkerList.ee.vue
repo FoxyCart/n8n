@@ -54,7 +54,7 @@ export default defineComponent({
 		};
 	},
 	mounted() {
-		setPageTitle(`n8n - ${this.pageTitle}`);
+		setPageTitle(`${this.pageTitle} - Automations | Foxy.io`);
 
 		this.$telemetry.track('User viewed worker view', {
 			instance_id: this.rootStore.instanceId,

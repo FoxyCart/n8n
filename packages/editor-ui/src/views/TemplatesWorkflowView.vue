@@ -5,20 +5,16 @@
 				<div :class="$style.title">
 					<n8n-heading v-if="template && template.name" tag="h1" size="2xlarge">{{
 						template.name
-					}}</n8n-heading>
+						}}</n8n-heading>
 					<n8n-text v-if="template && template.name" color="text-base" size="small">
 						{{ $locale.baseText('generic.workflow') }}
 					</n8n-text>
 					<n8n-loading :loading="!template || !template.name" :rows="2" variant="h1" />
 				</div>
 				<div :class="$style.button">
-					<n8n-button
-						v-if="template"
-						data-test-id="use-template-button"
-						:label="$locale.baseText('template.buttons.useThisWorkflowButton')"
-						size="large"
-						@click="openTemplateSetup(templateId, $event)"
-					/>
+					<n8n-button v-if="template" data-test-id="use-template-button"
+						:label="$locale.baseText('template.buttons.useThisWorkflowButton')" size="large"
+						@click="openTemplateSetup(templateId, $event)" />
 					<n8n-loading :loading="!template" :rows="1" variant="button" />
 				</div>
 			</div>
@@ -28,27 +24,17 @@
 		</template>
 		<template v-if="!notFoundError" #content>
 			<div :class="$style.image">
-				<WorkflowPreview
-					v-if="showPreview"
-					:loading="loading"
-					:workflow="template && template.workflow"
-					@close="onHidePreview"
-				/>
+				<WorkflowPreview v-if="showPreview" :loading="loading" :workflow="template && template.workflow"
+					@close="onHidePreview" />
 			</div>
 			<div :class="$style.content">
 				<div :class="$style.markdown" data-test-id="template-description">
-					<n8n-markdown
-						:content="template && template.description"
-						:images="template && template.image"
-						:loading="loading"
-					/>
+					<n8n-markdown :content="template && template.description" :images="template && template.image"
+						:loading="loading" />
 				</div>
 				<div :class="$style.details">
-					<TemplateDetails
-						:block-title="$locale.baseText('template.details.appsInTheWorkflow')"
-						:loading="loading"
-						:template="template"
-					/>
+					<TemplateDetails :block-title="$locale.baseText('template.details.appsInTheWorkflow')" :loading="loading"
+						:template="template" />
 				</div>
 			</div>
 		</template>
@@ -106,9 +92,9 @@ export default defineComponent({
 	watch: {
 		template(template: ITemplatesWorkflowFull) {
 			if (template) {
-				setPageTitle(`n8n - Template template: ${template.name}`);
+				setPageTitle(`Template template: ${template.name} - Automations | Foxy.io`);
 			} else {
-				setPageTitle('n8n - Templates');
+				setPageTitle('Templates - Automations | Foxy.io');
 			}
 		},
 	},

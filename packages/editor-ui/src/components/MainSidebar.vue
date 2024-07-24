@@ -1,50 +1,36 @@
 <template>
-	<div
-		id="side-menu"
-		:class="{
+	<div id="side-menu" :class="{
 			['side-menu']: true,
 			[$style.sideMenu]: true,
 			[$style.sideMenuCollapsed]: isCollapsed,
-		}"
-	>
-		<div
-			id="collapse-change-button"
-			:class="['clickable', $style.sideMenuCollapseButton]"
-			@click="toggleCollapse"
-		>
+		}">
+		<div id="collapse-change-button" :class="['clickable', $style.sideMenuCollapseButton]" @click="toggleCollapse">
 			<n8n-icon v-if="isCollapsed" icon="chevron-right" size="xsmall" class="ml-5xs" />
 			<n8n-icon v-else icon="chevron-left" size="xsmall" class="mr-5xs" />
 		</div>
 		<n8n-menu :items="mainMenuItems" :collapsed="isCollapsed" @select="handleSelect">
 			<template #header>
 				<div :class="$style.logo">
-					<img :src="logoPath" data-test-id="n8n-logo" :class="$style.icon" alt="n8n" />
+					<img :src="logoPath" data-test-id="n8n-logo" :class="$style.icon" alt="n8n"
+						style="background: #fff; width: 2rem; height: 2rem; border-radius: 10px; margin-left: 5px; margin-right: 5px; border: 1px solid var(--color-foreground-base);" />
+					<span v-if="!isCollapsed" class="ml-2xs" style="font-size: 1rem;">FOXY.IO</span>
 				</div>
 			</template>
 
 			<template #beforeLowerMenu>
 				<BecomeTemplateCreatorCta v-if="fullyExpanded && !userIsTrialing" />
-				<ExecutionsUsage
-					v-if="fullyExpanded && userIsTrialing"
-					:cloud-plan-data="currentPlanAndUsageData"
-			/></template>
+				<ExecutionsUsage v-if="fullyExpanded && userIsTrialing" :cloud-plan-data="currentPlanAndUsageData" />
+			</template>
 			<template #menuSuffix>
 				<div>
-					<div
-						v-if="hasVersionUpdates"
-						data-test-id="version-updates-panel-button"
-						:class="$style.updates"
-						@click="openUpdatesPanel"
-					>
+					<div v-if="hasVersionUpdates" data-test-id="version-updates-panel-button" :class="$style.updates"
+						@click="openUpdatesPanel">
 						<div :class="$style.giftContainer">
 							<GiftNotificationIcon />
 						</div>
-						<n8n-text
-							:class="{ ['ml-xs']: true, [$style.expanded]: fullyExpanded }"
-							color="text-base"
-						>
+						<n8n-text :class="{ ['ml-xs']: true, [$style.expanded]: fullyExpanded }" color="text-base">
 							{{ nextVersions.length > 99 ? '99+' : nextVersions.length }} update{{
-								nextVersions.length > 1 ? 's' : ''
+							nextVersions.length > 1 ? 's' : ''
 							}}
 						</n8n-text>
 					</div>
@@ -55,46 +41,26 @@
 				<div :class="$style.userArea">
 					<div class="ml-3xs" data-test-id="main-sidebar-user-menu">
 						<!-- This dropdown is only enabled when sidebar is collapsed -->
-						<el-dropdown
-							:disabled="!isCollapsed"
-							placement="right-end"
-							trigger="click"
-							@command="onUserActionToggle"
-						>
+						<el-dropdown :disabled="!isCollapsed" placement="right-end" trigger="click" @command="onUserActionToggle">
 							<div :class="{ [$style.avatar]: true, ['clickable']: isCollapsed }">
-								<n8n-avatar
-									:first-name="usersStore.currentUser.firstName"
-									:last-name="usersStore.currentUser.lastName"
-									size="small"
-								/>
+								<n8n-avatar :first-name="usersStore.currentUser.firstName" :last-name="usersStore.currentUser.lastName"
+									size="small" />
 							</div>
 							<template #dropdown>
 								<el-dropdown-menu>
 									<el-dropdown-item command="settings">
 										{{ $locale.baseText('settings') }}
 									</el-dropdown-item>
-									<el-dropdown-item command="logout">
-										{{ $locale.baseText('auth.signout') }}
-									</el-dropdown-item>
 								</el-dropdown-menu>
 							</template>
 						</el-dropdown>
 					</div>
-					<div
-						:class="{ ['ml-2xs']: true, [$style.userName]: true, [$style.expanded]: fullyExpanded }"
-					>
+					<div :class="{ ['ml-2xs']: true, [$style.userName]: true, [$style.expanded]: fullyExpanded }">
 						<n8n-text size="small" :bold="true" color="text-dark">{{
 							usersStore.currentUser.fullName
-						}}</n8n-text>
+							}}</n8n-text>
 					</div>
-					<div :class="{ [$style.userActions]: true, [$style.expanded]: fullyExpanded }">
-						<n8n-action-dropdown
-							:items="userMenuItems"
-							placement="top-start"
-							data-test-id="user-menu"
-							@select="onUserActionToggle"
-						/>
-					</div>
+
 				</div>
 			</template>
 		</n8n-menu>
@@ -166,7 +132,7 @@ export default defineComponent({
 			useTemplatesStore,
 		),
 		logoPath(): string {
-			return this.basePath + (this.isCollapsed ? 'static/logo/collapsed.svg' : this.uiStore.logo);
+			return this.basePath + 'static/logo/collapsed.svg';
 		},
 		hasVersionUpdates(): boolean {
 			return (
@@ -235,33 +201,12 @@ export default defineComponent({
 					route: { to: { name: VIEWS.TEMPLATES } },
 				},
 				{
-					// Link to website templates, available if custom templates are not enabled
-					id: 'templates',
-					icon: 'box-open',
-					label: this.$locale.baseText('mainSidebar.templates'),
-					position: 'top',
-					available:
-						this.settingsStore.isTemplatesEnabled && !this.templatesStore.hasCustomTemplatesHost,
-					link: {
-						href: this.templatesStore.websiteTemplateRepositoryURL,
-						target: '_blank',
-					},
-				},
-				{
 					id: 'credentials',
 					icon: 'key',
 					label: this.$locale.baseText('mainSidebar.credentials'),
 					customIconSize: 'medium',
 					position: 'top',
 					route: { to: { name: VIEWS.CREDENTIALS } },
-				},
-				{
-					id: 'variables',
-					icon: 'variable',
-					label: this.$locale.baseText('mainSidebar.variables'),
-					customIconSize: 'medium',
-					position: 'top',
-					route: { to: { name: VIEWS.VARIABLES } },
 				},
 				{
 					id: 'executions',
@@ -457,15 +402,15 @@ export default defineComponent({
 				.find((route) => route.path === '/settings')!
 				.children.map((route) => route.name ?? '');
 
-			let defaultSettingsRoute = { name: VIEWS.USERS_SETTINGS };
-			for (const route of settingsRoutes) {
-				if (this.canUserAccessRouteByName(route.toString())) {
-					defaultSettingsRoute = {
-						name: route.toString() as VIEWS,
-					};
-					break;
-				}
-			}
+			let defaultSettingsRoute = { name: VIEWS.PERSONAL_SETTINGS };
+			// for (const route of settingsRoutes) {
+			// 	if (this.canUserAccessRouteByName(route.toString())) {
+			// 		defaultSettingsRoute = {
+			// 			name: route.toString() as VIEWS,
+			// 		};
+			// 		break;
+			// 	}
+			// }
 
 			return defaultSettingsRoute;
 		},
@@ -494,6 +439,7 @@ export default defineComponent({
 	border-right: var(--border-width-base) var(--border-style-base) var(--color-foreground-base);
 	transition: width 150ms ease-in-out;
 	width: $sidebar-expanded-width;
+
 	.logo {
 		height: $header-height;
 		display: flex;
@@ -546,14 +492,17 @@ export default defineComponent({
 	svg {
 		color: var(--color-text-base) !important;
 	}
+
 	span {
 		display: none;
+
 		&.expanded {
 			display: initial;
 		}
 	}
 
 	&:hover {
+
 		&,
 		& svg {
 			color: var(--color-text-dark) !important;

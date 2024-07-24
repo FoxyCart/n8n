@@ -15,34 +15,23 @@
 			<div v-else :class="$style.notFound">
 				<n8n-text color="text-base">{{
 					$locale.baseText('templates.collectionsNotFound')
-				}}</n8n-text>
+					}}</n8n-text>
 			</div>
 		</template>
 		<template v-if="!notFoundError" #content>
 			<div :class="$style.wrapper">
 				<div :class="$style.mainContent">
 					<div v-if="loading || (collection && collection.description)" :class="$style.markdown">
-						<n8n-markdown
-							:content="collection && collection.description"
-							:images="collection && collection.image"
-							:loading="loading"
-						/>
+						<n8n-markdown :content="collection && collection.description" :images="collection && collection.image"
+							:loading="loading" />
 					</div>
-					<TemplateList
-						:infinite-scroll-enabled="false"
-						:loading="loading"
-						:use-workflow-button="true"
-						:workflows="loading ? [] : collectionWorkflows"
-						@use-workflow="onUseWorkflow"
-						@open-template="onOpenTemplate"
-					/>
+					<TemplateList :infinite-scroll-enabled="false" :loading="loading" :use-workflow-button="true"
+						:workflows="loading ? [] : collectionWorkflows" @use-workflow="onUseWorkflow"
+						@open-template="onOpenTemplate" />
 				</div>
 				<div :class="$style.details">
-					<TemplateDetails
-						:block-title="$locale.baseText('template.details.appsInTheCollection')"
-						:loading="loading"
-						:template="collection"
-					/>
+					<TemplateDetails :block-title="$locale.baseText('template.details.appsInTheCollection')" :loading="loading"
+						:template="collection" />
 				</div>
 			</div>
 		</template>
@@ -114,9 +103,9 @@ export default defineComponent({
 	watch: {
 		collection(collection: ITemplatesCollection) {
 			if (collection) {
-				setPageTitle(`n8n - Template collection: ${collection.name}`);
+				setPageTitle(`Template collection: ${collection.name} - Automations | Foxy.io`);
 			} else {
-				setPageTitle('n8n - Templates');
+				setPageTitle('Templates - Automations | Foxy.io');
 			}
 		},
 	},

@@ -1,116 +1,25 @@
 <template>
 	<div :class="$style.container" data-test-id="personal-settings-container">
-		<div :class="$style.header">
-			<n8n-heading size="2xlarge">{{
-				i18n.baseText('settings.personal.personalSettings')
-			}}</n8n-heading>
-			<div :class="$style.user">
-				<span :class="$style.username" data-test-id="current-user-name">
-					<n8n-text color="text-light">{{ currentUser.fullName }}</n8n-text>
-				</span>
-				<n8n-avatar
-					:first-name="currentUser.firstName"
-					:last-name="currentUser.lastName"
-					size="large"
-				/>
-			</div>
-		</div>
-		<div>
-			<div class="mb-s">
-				<n8n-heading size="large">{{
-					i18n.baseText('settings.personal.basicInformation')
-				}}</n8n-heading>
-			</div>
-			<div data-test-id="personal-data-form">
-				<n8n-form-inputs
-					v-if="formInputs"
-					:inputs="formInputs"
-					:event-bus="formBus"
-					@update="onInput"
-					@ready="onReadyToSubmit"
-					@submit="onSubmit"
-				/>
-			</div>
-		</div>
-		<div v-if="!signInWithLdap && !signInWithSaml">
-			<div class="mb-s">
-				<n8n-heading size="large">{{ i18n.baseText('settings.personal.security') }}</n8n-heading>
-			</div>
-			<div class="mb-s">
-				<n8n-input-label :label="i18n.baseText('auth.password')">
-					<n8n-link data-test-id="change-password-link" @click="openPasswordModal">{{
-						i18n.baseText('auth.changePassword')
-					}}</n8n-link>
-				</n8n-input-label>
-			</div>
-			<div v-if="isMfaFeatureEnabled">
-				<div class="mb-xs">
-					<n8n-input-label :label="$locale.baseText('settings.personal.mfa.section.title')" />
-					<n8n-text :bold="false" :class="$style.infoText">
-						{{
-							mfaDisabled
-								? $locale.baseText('settings.personal.mfa.button.disabled.infobox')
-								: $locale.baseText('settings.personal.mfa.button.enabled.infobox')
-						}}
-						<n8n-link :to="mfaDocsUrl" size="small" :bold="true">
-							{{ $locale.baseText('generic.learnMore') }}
-						</n8n-link>
-					</n8n-text>
-				</div>
-				<n8n-button
-					v-if="mfaDisabled"
-					:class="$style.button"
-					type="tertiary"
-					:label="$locale.baseText('settings.personal.mfa.button.enabled')"
-					data-test-id="enable-mfa-button"
-					@click="onMfaEnableClick"
-				/>
-				<n8n-button
-					v-else
-					:class="$style.disableMfaButton"
-					type="tertiary"
-					:label="$locale.baseText('settings.personal.mfa.button.disabled')"
-					data-test-id="disable-mfa-button"
-					@click="onMfaDisableClick"
-				/>
-			</div>
-		</div>
+
 		<div>
 			<div class="mb-s">
 				<n8n-heading size="large">{{
 					i18n.baseText('settings.personal.personalisation')
-				}}</n8n-heading>
+					}}</n8n-heading>
 			</div>
 			<div>
 				<n8n-input-label :label="i18n.baseText('settings.personal.theme')">
-					<n8n-select
-						:class="$style.themeSelect"
-						data-test-id="theme-select"
-						size="small"
-						:model-value="currentTheme"
-						filterable
-						@update:model-value="selectTheme"
-					>
-						<n8n-option
-							v-for="item in themeOptions"
-							:key="item.name"
-							:label="$t(item.label)"
-							:value="item.name"
-						>
+					<n8n-select :class="$style.themeSelect" data-test-id="theme-select" size="small" :model-value="currentTheme"
+						filterable @update:model-value="selectTheme">
+						<n8n-option v-for="item in themeOptions" :key="item.name" :label="$t(item.label)" :value="item.name">
 						</n8n-option>
 					</n8n-select>
 				</n8n-input-label>
 			</div>
 		</div>
 		<div>
-			<n8n-button
-				float="right"
-				:label="i18n.baseText('settings.personal.save')"
-				size="large"
-				:disabled="!hasAnyChanges || !readyToSubmit"
-				data-test-id="save-settings-button"
-				@click="onSaveClick"
-			/>
+			<n8n-button float="right" :label="i18n.baseText('settings.personal.save')" size="large"
+				:disabled="!hasAnyChanges || !readyToSubmit" data-test-id="save-settings-button" @click="onSaveClick" />
 		</div>
 	</div>
 </template>
@@ -289,9 +198,10 @@ export default defineComponent({
 
 <style lang="scss" module>
 .container {
-	> * {
+	>* {
 		margin-bottom: var(--spacing-2xl);
 	}
+
 	padding-bottom: 100px;
 }
 
@@ -299,6 +209,7 @@ export default defineComponent({
 	display: flex;
 	align-items: center;
 	white-space: nowrap;
+
 	*:first-child {
 		flex-grow: 1;
 	}
@@ -326,14 +237,16 @@ export default defineComponent({
 
 .disableMfaButton {
 	--button-color: var(--color-danger);
-	> span {
+
+	>span {
 		font-weight: var(--font-weight-bold);
 	}
 }
 
 .button {
 	font-size: var(--spacing-xs);
-	> span {
+
+	>span {
 		font-weight: var(--font-weight-bold);
 	}
 }

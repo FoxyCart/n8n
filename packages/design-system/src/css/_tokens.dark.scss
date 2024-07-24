@@ -14,7 +14,7 @@
 	// Foreground
 	--color-foreground-xdark: var(--prim-gray-200);
 	--color-foreground-dark: var(--prim-gray-420);
-	--color-foreground-base: var(--prim-gray-670);
+	--color-foreground-base: hsl(290, 10%, 17%);
 	--color-foreground-light: var(--prim-gray-740);
 	--color-foreground-xlight: var(--prim-gray-820);
 
@@ -22,8 +22,8 @@
 	--color-background-dark: var(--prim-gray-70);
 	--color-background-medium: var(--prim-gray-540);
 	--color-background-base: var(--prim-gray-670);
-	--color-background-light: var(--prim-gray-820);
-	--color-background-xlight: var(--prim-gray-740);
+	--color-background-light: #1b171c;
+	--color-background-xlight: hsl(290, 10%, 13%);
 
 	--box-shadow-base: 0 2px 4px rgba(0, 0, 0, 0.2), 0 0 6px rgba(0, 0, 0, 0.1);
 	--box-shadow-dark: 0 2px 4px rgba(0, 0, 0, 0.2), 0 0 6px rgba(0, 0, 0, 0.2);
@@ -39,11 +39,11 @@
 	--color-lm-chat-user-border: var(--prim-color-alt-a);
 
 	// Canvas
-	--color-canvas-background: var(--prim-gray-820);
-	--color-canvas-background-h: var(--prim-gray-h); // Used for connectors labels background
+	--color-canvas-background: hsl(288, 10%, 10%);
+	--color-canvas-background-h: 288;
 	--color-canvas-background-s: 1%;
 	--color-canvas-background-l: 18%;
-	--color-canvas-dot: var(--prim-gray-670);
+	--color-canvas-dot: var(--prim-gray-800);
 	--color-canvas-read-only-line: var(--prim-gray-800);
 	--color-canvas-node-background: var(--prim-gray-40);
 	--color-canvas-node-pinned-border: var(--prim-color-secondary-tint-100);
@@ -207,11 +207,9 @@
 	--border-color-light: var(--color-foreground-light);
 	--border-base: var(--border-width-base) var(--border-style-base) var(--color-foreground-base);
 	--node-type-supplemental-label-color-l: 100%;
-	--node-type-supplemental-label-color: hsl(
-		var(--node-type-supplemental-label-color-h),
-		var(--node-type-supplemental-label-color-s),
-		var(--node-type-supplemental-label-color-l)
-	);
+	--node-type-supplemental-label-color: hsl(var(--node-type-supplemental-label-color-h),
+			var(--node-type-supplemental-label-color-s),
+			var(--node-type-supplemental-label-color-l));
 	--color-configurable-node-name: var(--color-text-lighter);
 	--color-secondary-link: var(--prim-color-secondary-tint-200);
 	--color-secondary-link-hover: var(--prim-color-secondary-tint-100);

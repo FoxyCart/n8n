@@ -34,7 +34,7 @@ onBeforeMount(async () => {
 });
 
 onMounted(async () => {
-	setPageTitle(`n8n - ${i18n.baseText('executionsList.workflowExecutions')}`);
+	setPageTitle(`${i18n.baseText('executionsList.workflowExecutions')} - Automations | Foxy.io`);
 	document.addEventListener('visibilitychange', onDocumentVisibilityChange);
 
 	await executionsStore.initialize();
@@ -80,12 +80,6 @@ async function onExecutionStop() {
 }
 </script>
 <template>
-	<GlobalExecutionsList
-		:executions="allExecutions"
-		:filters="filters"
-		:total="executionsCount"
-		:estimated-total="executionsCountEstimated"
-		@execution:stop="onExecutionStop"
-		@update:filters="onUpdateFilters"
-	/>
+	<GlobalExecutionsList :executions="allExecutions" :filters="filters" :total="executionsCount"
+		:estimated-total="executionsCountEstimated" @execution:stop="onExecutionStop" @update:filters="onUpdateFilters" />
 </template>
