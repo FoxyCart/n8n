@@ -1,12 +1,12 @@
 /* eslint-disable n8n-nodes-base/node-filename-against-convention */
-import { N8nTrigger } from '../N8nTrigger.node';
+import { FoxyAutomationsTrigger } from '../FoxyAutomationsTrigger.node';
 
-describe('N8nTrigger', () => {
-	let n8nTrigger: N8nTrigger;
+describe('FoxyAutomationsTrigger', () => {
+	let n8nTrigger: FoxyAutomationsTrigger;
 	let mockTriggerFunctions: any;
 
 	beforeEach(() => {
-		n8nTrigger = new N8nTrigger();
+		n8nTrigger = new FoxyAutomationsTrigger();
 
 		// Mock trigger functions
 		mockTriggerFunctions = {

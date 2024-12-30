@@ -1,14 +1,18 @@
-import { IExecuteFunctions } from 'n8n-workflow';
+import { type IExecuteFunctions } from 'n8n-workflow';
+import foxySDK from '@foxy.io/sdk';
 
 export async function handleExecute(fns: IExecuteFunctions) {
-	const credentials = await fns.getCredentials('foxyJwtApi');
-	const foxySDK = require('@foxy.io/sdk');
+	const credentials = (await fns.getCredentials('foxyJwtApi')) as {
+		refreshToken: string;
+		clientSecret: string;
+		clientId: string;
+	};
 	const foxyApi = new foxySDK.Backend.API(credentials);
 
 	type Options = {
 		method?: string;
 		body?: string;
-		headers?: object;
+		headers?: HeadersInit;
 	};
 
 	type Method = 'get' | 'post' | 'delete' | 'patch' | 'put';

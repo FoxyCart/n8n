@@ -10,17 +10,17 @@ import { searchWorkflows } from './WorkflowLocator';
  *
  * See: https://docs.n8n.io/api/api-reference/
  */
-export class N8n implements INodeType {
+export class FoxyAutomations implements INodeType {
 	description: INodeTypeDescription = {
-		displayName: 'n8n',
-		name: 'n8n',
-		icon: 'file:n8n.svg',
+		displayName: 'Foxy Automations',
+		name: 'foxyAutomations',
+		icon: 'file:foxy.svg',
 		group: ['transform'],
 		version: 1,
 		subtitle: '={{$parameter["operation"] + ": " + $parameter["resource"]}}',
-		description: 'Handle events and perform actions on your n8n instance',
+		description: 'Handle events and perform actions on your Foxy Automations instance.',
 		defaults: {
-			name: 'n8n',
+			name: 'foxyAutomations',
 		},
 		inputs: [NodeConnectionType.Main],
 		outputs: [NodeConnectionType.Main],

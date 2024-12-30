@@ -1,4 +1,4 @@
-import { INodeProperties } from 'n8n-workflow';
+import { type INodeProperties } from 'n8n-workflow';
 
 export const uiProperties = [
 	{
@@ -16,8 +16,16 @@ export const uiProperties = [
 		type: 'options',
 		options: [
 			{
+				name: 'Delete',
+				value: 'delete',
+			},
+			{
 				name: 'Get',
 				value: 'get',
+			},
+			{
+				name: 'Patch',
+				value: 'patch',
 			},
 			{
 				name: 'Post',
@@ -26,14 +34,6 @@ export const uiProperties = [
 			{
 				name: 'Put',
 				value: 'put',
-			},
-			{
-				name: 'Patch',
-				value: 'patch',
-			},
-			{
-				name: 'Delete',
-				value: 'delete',
 			},
 		],
 		default: 'get',

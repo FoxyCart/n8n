@@ -1,8 +1,10 @@
-import type {
-	IExecuteFunctions,
-	INodeExecutionData,
-	INodeType,
-	INodeTypeDescription,
+import {
+	NodeConnectionType,
+	type IDataObject,
+	type IExecuteFunctions,
+	type INodeExecutionData,
+	type INodeType,
+	type INodeTypeDescription,
 } from 'n8n-workflow';
 
 import { handleExecute } from './GenericFunctions';
@@ -10,18 +12,17 @@ import { uiProperties } from './properties';
 
 export class FoxyApi implements INodeType {
 	description: INodeTypeDescription = {
-		displayName: 'FoxyApi',
+		displayName: 'Foxy API',
 		name: 'foxyApi',
-		icon: 'file:foxyLogo.svg',
+		icon: 'file:foxy.svg',
 		group: ['transform'],
 		version: 1,
 		description: 'Consume Foxy API',
 		defaults: {
-			name: 'FoxyApi',
-			color: '#1A82e2',
+			name: 'Foxy',
 		},
-		inputs: ['main'],
-		outputs: ['main'],
+		inputs: [NodeConnectionType.Main],
+		outputs: [NodeConnectionType.Main],
 		credentials: [
 			{
 				name: 'foxyJwtApi',
@@ -32,8 +33,7 @@ export class FoxyApi implements INodeType {
 	};
 
 	async execute(this: IExecuteFunctions): Promise<INodeExecutionData[][]> {
-		const that = this;
-		const response = await handleExecute(that);
-		return [this.helpers.returnJsonArray(response)];
+		const response = await handleExecute(this);
+		return [this.helpers.returnJsonArray([response as unknown as IDataObject])];
 	}
 }

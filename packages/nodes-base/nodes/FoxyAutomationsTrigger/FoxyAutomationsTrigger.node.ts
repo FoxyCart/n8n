@@ -8,18 +8,18 @@ import { NodeConnectionType } from 'n8n-workflow';
 
 type eventType = 'Instance started' | 'Workflow activated' | 'Workflow updated' | undefined;
 
-export class N8nTrigger implements INodeType {
+export class FoxyAutomationsTrigger implements INodeType {
 	description: INodeTypeDescription = {
-		displayName: 'n8n Trigger',
-		name: 'n8nTrigger',
-		icon: 'file:n8nTrigger.svg',
+		displayName: 'Foxy Automations Trigger',
+		name: 'foxyAutomationsTrigger',
+		icon: 'file:foxy.svg',
 		group: ['trigger'],
 		version: 1,
-		description: 'Handle events and perform actions on your n8n instance',
+		description: 'Handle events and perform actions on your Foxy Automations instance.',
 		eventTriggerDescription: '',
 		mockManualExecution: true,
 		defaults: {
-			name: 'n8n Trigger',
+			name: 'Foxy Automations Trigger',
 		},
 		inputs: [],
 		outputs: [NodeConnectionType.Main],
@@ -33,7 +33,7 @@ export class N8nTrigger implements INodeType {
 				description: `Specifies under which conditions an execution should happen:
 				<ul>
 					<li><b>Active Workflow Updated</b>: Triggers when this workflow is updated</li>
-					<li><b>Instance Started</b>:  Triggers when this n8n instance is started or re-started</li>
+					<li><b>Instance Started</b>:  Triggers when this Foxy Automations instance is started or re-started</li>
 					<li><b>Workflow Activated</b>: Triggers when this workflow is activated</li>
 				</ul>`,
 				options: [
@@ -45,7 +45,7 @@ export class N8nTrigger implements INodeType {
 					{
 						name: 'Instance Started',
 						value: 'init',
-						description: 'Triggers when this n8n instance is started or re-started',
+						description: 'Triggers when this Foxy Automations instance is started or re-started',
 					},
 					{
 						name: 'Workflow Activated',

@@ -1,5 +1,5 @@
 {
-	"node": "n8n-nodes-base.n8nTrigger",
+	"node": "n8n-nodes-base.foxyAutomationsTrigger",
 	"nodeVersion": "1.0",
 	"codexVersion": "1.0",
 	"categories": ["Core Nodes"],

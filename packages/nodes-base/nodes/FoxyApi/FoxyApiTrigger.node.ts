@@ -1,29 +1,29 @@
-import type {
-	IWebhookFunctions,
-	INodeType,
-	INodeTypeDescription,
-	IWebhookResponseData,
+import {
+	NodeConnectionType,
+	type IWebhookFunctions,
+	type INodeType,
+	type INodeTypeDescription,
+	type IWebhookResponseData,
 } from 'n8n-workflow';
 
 // import { foxyApiRequest } from './GenericFunctions';
 
 // import { snakeCase } from 'change-case';
 
-export class FoxyTrigger implements INodeType {
+export class FoxyApiTrigger implements INodeType {
 	description: INodeTypeDescription = {
-		displayName: 'Foxy Trigger',
-		name: 'foxyTrigger',
-		icon: 'file:foxyLogo.svg',
+		displayName: 'Foxy API Trigger',
+		name: 'foxyApiTrigger',
+		icon: 'file:foxy.svg',
 		group: ['trigger'],
 		version: 1,
 		subtitle: '={{$parameter["event"]}}',
 		description: 'Handle Foxy events via webhooks',
 		defaults: {
 			name: 'Foxy Trigger',
-			color: '#6ad7b9',
 		},
 		inputs: [],
-		outputs: ['main'],
+		outputs: [NodeConnectionType.Main],
 		credentials: [],
 		webhooks: [
 			{
