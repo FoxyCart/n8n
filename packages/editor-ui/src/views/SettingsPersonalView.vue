@@ -78,7 +78,7 @@ const hasAnyPersonalisationChanges = computed((): boolean => {
 	return currentSelectedTheme.value !== uiStore.theme;
 });
 const hasAnyChanges = computed(() => {
-	return hasAnyBasicInfoChanges.value || hasAnyPersonalisationChanges.value;
+	return hasAnyPersonalisationChanges.value;
 });
 
 onMounted(() => {
@@ -267,7 +267,7 @@ onBeforeUnmount(() => {
 				/>
 			</div>
 		</div>
-		<div>
+		<!-- <div>
 			<div class="mb-s">
 				<n8n-heading size="large">{{
 					i18n.baseText('settings.personal.basicInformation')
@@ -283,8 +283,8 @@ onBeforeUnmount(() => {
 					@submit="onSubmit"
 				/>
 			</div>
-		</div>
-		<div v-if="isPersonalSecurityEnabled">
+		</div> -->
+		<!-- <div v-if="isPersonalSecurityEnabled">
 			<div class="mb-s">
 				<n8n-heading size="large">{{ i18n.baseText('settings.personal.security') }}</n8n-heading>
 			</div>
@@ -326,7 +326,7 @@ onBeforeUnmount(() => {
 					@click="onMfaDisableClick"
 				/>
 			</div>
-		</div>
+		</div> -->
 		<div>
 			<div class="mb-s">
 				<n8n-heading size="large">{{
@@ -358,7 +358,7 @@ onBeforeUnmount(() => {
 				float="right"
 				:label="i18n.baseText('settings.personal.save')"
 				size="large"
-				:disabled="!hasAnyChanges || !readyToSubmit"
+				:disabled="!hasAnyChanges"
 				data-test-id="save-settings-button"
 				@click="onSaveClick"
 			/>

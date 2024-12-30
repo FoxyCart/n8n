@@ -27,12 +27,14 @@ export function useBugReporting() {
 	const debugInfo = useDebugInfo();
 
 	const getReportingURL = () => {
-		const url = new URL(BASE_FORUM_URL);
+		// const url = new URL(BASE_FORUM_URL);
 
-		const report = `${REPORT_TEMPLATE}\n${debugInfo.generateDebugInfo({ skipSensitive: true, secondaryHeader: true })}}`;
-		url.searchParams.append('body', report);
+		// const report = `${REPORT_TEMPLATE}\n${debugInfo.generateDebugInfo({ skipSensitive: true, secondaryHeader: true })}}`;
+		// url.searchParams.append('body', report);
 
-		return url.toString();
+		// return url.toString();
+
+		return 'https://www.foxy.io/contact';
 	};
 
 	return {

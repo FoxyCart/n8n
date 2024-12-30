@@ -343,7 +343,7 @@ watch(showOAuthSuccessBanner, (newValue, oldValue) => {
 					:redact-value="true"
 				/>
 			</template>
-			<EnterpriseEdition v-else :features="[EnterpriseEditionFeature.Sharing]">
+			<!-- <EnterpriseEdition v-else :features="[EnterpriseEditionFeature.Sharing]">
 				<div>
 					<n8n-info-tip :bold="false">
 						{{
@@ -353,7 +353,7 @@ watch(showOAuthSuccessBanner, (newValue, oldValue) => {
 						}}
 					</n8n-info-tip>
 				</div>
-			</EnterpriseEdition>
+			</EnterpriseEdition> -->
 
 			<CredentialInputs
 				v-if="credentialType && credentialPermissions.update"
@@ -380,7 +380,7 @@ watch(showOAuthSuccessBanner, (newValue, oldValue) => {
 				{{ i18n.baseText('credentialEdit.credentialConfig.missingCredentialType') }}
 			</n8n-text>
 
-			<EnterpriseEdition :features="[EnterpriseEditionFeature.ExternalSecrets]">
+			<!-- <EnterpriseEdition :features="[EnterpriseEditionFeature.ExternalSecrets]">
 				<template #fallback>
 					<n8n-info-tip class="mt-s">
 						{{ i18n.baseText('credentialEdit.credentialConfig.externalSecrets') }}
@@ -389,7 +389,7 @@ watch(showOAuthSuccessBanner, (newValue, oldValue) => {
 						</n8n-link>
 					</n8n-info-tip>
 				</template>
-			</EnterpriseEdition>
+			</EnterpriseEdition> -->
 		</div>
 		<CredentialDocs
 			v-if="showCredentialDocs"

@@ -10,7 +10,7 @@ defineProps<{
 }>();
 </script>
 <template>
-	<Background data-test-id="canvas-background" pattern-color="#aaa" :gap="GRID_SIZE">
+	<Background data-test-id="canvas-background" pattern-color="#323334" :gap="GRID_SIZE">
 		<template v-if="striped" #pattern-container="patternProps">
 			<CanvasBackgroundStripedPattern
 				:id="patternProps.id"

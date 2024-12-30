@@ -4,7 +4,6 @@ import { computed, onMounted, useCssModule, useTemplateRef } from 'vue';
 import { useFavicon } from '@vueuse/core';
 
 import LogoIcon from './logo-icon.svg';
-import LogoText from './logo-text.svg';
 
 const props = defineProps<
 	(
@@ -45,28 +44,37 @@ const containerClasses = computed(() => {
 	];
 });
 
-const svg = useTemplateRef<{ $el: Element }>('logo');
-onMounted(() => {
-	if (releaseChannel === 'stable' || !('createObjectURL' in URL)) return;
+// const svg = useTemplateRef<{ $el: Element }>('logo');
+// onMounted(() => {
+// 	if (releaseChannel === 'stable' || !('createObjectURL' in URL)) return;
 
-	const logoEl = svg.value!.$el;
+// 	const logoEl = svg.value!.$el;
 
-	// Change the logo fill color inline, so that favicon can also use it
-	const logoColor = releaseChannel === 'dev' ? '#838383' : '#E9984B';
-	logoEl.querySelector('path')?.setAttribute('fill', logoColor);
+// 	// Change the logo fill color inline, so that favicon can also use it
+// 	const logoColor = releaseChannel === 'dev' ? '#838383' : '#E9984B';
+// 	logoEl.querySelector('path')?.setAttribute('fill', logoColor);
 
-	// Reuse the SVG as favicon
-	const blob = new Blob([logoEl.outerHTML], { type: 'image/svg+xml' });
-	useFavicon(URL.createObjectURL(blob));
-});
+// 	// Reuse the SVG as favicon
+// 	const blob = new Blob([logoEl.outerHTML], { type: 'image/svg+xml' });
+// 	useFavicon(URL.createObjectURL(blob));
+// });
 </script>
 
 <template>
 	<div :class="containerClasses" data-test-id="n8n-logo">
-		<LogoIcon :class="$style.logo" ref="logo" />
-		<LogoText v-if="showLogoText" :class="$style.logoText" />
-		<div v-if="showReleaseChannelTag" size="small" round :class="$style.releaseChannelTag">
-			{{ releaseChannel }}
+		<div :class="$style.logo" style="display: flex; align-items: center">
+			<LogoIcon
+				:class="$style.icon"
+				style="
+					background: #fff;
+					width: 1.7rem;
+					height: 1.7rem;
+					border-radius: 7px;
+					border: 1px solid var(--color-foreground-base);
+				"
+				:style="{ marginLeft: !collapsed ? '0' : '2.5px' }"
+			/>
+			<span v-if="!collapsed" class="ml-2xs" style="font-size: 0.725rem">FOXY.IO</span>
 		</div>
 	</div>
 </template>

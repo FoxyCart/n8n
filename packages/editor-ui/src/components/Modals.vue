@@ -101,9 +101,9 @@ import type { EventBus } from 'n8n-design-system';
 			</template>
 		</ModalRoot>
 
-		<ModalRoot :name="PERSONALIZATION_MODAL_KEY">
+		<!-- <ModalRoot :name="PERSONALIZATION_MODAL_KEY">
 			<PersonalizationModal />
-		</ModalRoot>
+		</ModalRoot> -->
 
 		<ModalRoot :name="TAGS_MANAGER_MODAL_KEY">
 			<WorkflowTagsManager />
@@ -258,10 +258,10 @@ import type { EventBus } from 'n8n-design-system';
 			</template>
 		</ModalRoot>
 
-		<ModalRoot :name="COMMUNITY_PLUS_ENROLLMENT_MODAL">
+		<!-- <ModalRoot :name="COMMUNITY_PLUS_ENROLLMENT_MODAL">
 			<template #default="{ modalName, data }">
 				<CommunityPlusEnrollmentModal :modal-name="modalName" :data="data" />
 			</template>
-		</ModalRoot>
+		</ModalRoot> -->
 	</div>
 </template>
