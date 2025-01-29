@@ -337,6 +337,7 @@ onBeforeUnmount(() => {
 				<n8n-input-label :label="i18n.baseText('settings.personal.theme')">
 					<n8n-select
 						v-model="currentSelectedTheme"
+						@change="() => updatePersonalisationSettings()"
 						:class="$style.themeSelect"
 						data-test-id="theme-select"
 						size="small"
@@ -353,7 +354,7 @@ onBeforeUnmount(() => {
 				</n8n-input-label>
 			</div>
 		</div>
-		<div>
+		<!-- <div>
 			<n8n-button
 				float="right"
 				:label="i18n.baseText('settings.personal.save')"
@@ -362,7 +363,7 @@ onBeforeUnmount(() => {
 				data-test-id="save-settings-button"
 				@click="onSaveClick"
 			/>
-		</div>
+		</div> -->
 	</div>
 </template>
 
