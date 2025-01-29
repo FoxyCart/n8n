@@ -96,9 +96,9 @@ watch(defaultLocale, (newLocale) => {
 		}"
 	>
 		<div id="app-grid" ref="appGrid" :class="$style['app-grid']">
-			<div id="banners" :class="$style.banners">
+			<!-- <div id="banners" :class="$style.banners">
 				<BannerStack v-if="!isDemoMode" />
-			</div>
+			</div> -->
 			<div id="header" :class="$style.header">
 				<router-view name="header"></router-view>
 			</div>
