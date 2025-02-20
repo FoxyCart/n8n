@@ -1,40 +1,60 @@
 import { GlobalConfig } from '@n8n/config';
-import { Service } from 'typedi';
+import { Service, Container } from 'typedi';
 
-import config from '@/config';
+interface HttpHeaders {
+	host?: string;
+	'x-forwarded-host'?: string;
+	'x-forwarded-proto'?: string;
+}
 
 @Service()
 export class UrlService {
 	/** Returns the base URL n8n is reachable from */
-	readonly baseUrl: string;
+	baseUrl: string;
 
 	constructor(private readonly globalConfig: GlobalConfig) {
-		this.baseUrl = this.generateBaseUrl();
+		// Initialize with config-only URL first
+		this.baseUrl = this.generateBaseUrlFromConfig();
 	}
 
-	/** Returns the base URL of the webhooks */
-	getWebhookBaseUrl() {
-		let urlBaseWebhook = this.trimQuotes(process.env.WEBHOOK_URL) || this.baseUrl;
-		if (!urlBaseWebhook.endsWith('/')) {
-			urlBaseWebhook += '/';
-		}
-		return urlBaseWebhook;
-	}
-
-	/** Return the n8n instance base URL without trailing slash */
-	getInstanceBaseUrl(): string {
-		const n8nBaseUrl = this.trimQuotes(config.getEnv('editorBaseUrl')) || this.getWebhookBaseUrl();
-
-		return n8nBaseUrl.endsWith('/') ? n8nBaseUrl.slice(0, n8nBaseUrl.length - 1) : n8nBaseUrl;
-	}
-
-	private generateBaseUrl(): string {
+	private generateBaseUrlFromConfig(): string {
 		const { path, port, host, protocol } = this.globalConfig;
-
 		if ((protocol === 'http' && port === 80) || (protocol === 'https' && port === 443)) {
 			return `${protocol}://${host}${path}`;
 		}
 		return `${protocol}://${host}:${port}${path}`;
+	}
+
+	private generateBaseUrl(): string {
+		try {
+			const headers: HttpHeaders = Container.get('httpRequestHeaders') ?? {};
+			const forwardedHost = headers['x-forwarded-host'];
+			const host = headers.host;
+
+			if (forwardedHost ?? host) {
+				const protocol = headers['x-forwarded-proto'] ?? this.globalConfig.protocol;
+				const finalHost = forwardedHost ?? host;
+				return `${protocol}://${finalHost}${this.globalConfig.path}`;
+			}
+		} catch {
+			// Ignore error when headers are not available
+		}
+
+		return this.generateBaseUrlFromConfig();
+	}
+
+	/** Return the n8n instance base URL without trailing slash */
+	getInstanceBaseUrl(): string {
+		// Get fresh URL in case headers are now available
+		this.baseUrl = this.generateBaseUrl();
+		return this.baseUrl.replace(/\/$/, '');
+	}
+
+	/** Returns the base URL of the webhooks */
+	getWebhookBaseUrl() {
+		// Get fresh URL in case headers are now available
+		this.baseUrl = this.generateBaseUrl();
+		return this.baseUrl;
 	}
 
 	/** Remove leading and trailing double quotes from a URL. */

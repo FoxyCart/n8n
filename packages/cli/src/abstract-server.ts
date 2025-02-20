@@ -104,6 +104,11 @@ export abstract class AbstractServer {
 
 		// Read incoming data into `rawBody`
 		this.app.use(rawBodyReader);
+
+		this.app.use((req, _res, next) => {
+			Container.set('httpRequestHeaders', req.headers);
+			next();
+		});
 	}
 
 	private setupDevMiddlewares() {
