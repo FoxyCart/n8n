@@ -366,7 +366,7 @@ const dismissEasyAICallout = () => {
 						{{ i18n.baseText('workflows.empty.startFromScratch') }}
 					</N8nText>
 				</N8nCard>
-				<!-- <N8nCard
+				<N8nCard
 					v-if="showEasyAIWorkflowCallout"
 					:class="$style.emptyStateCard"
 					hoverable
@@ -377,7 +377,7 @@ const dismissEasyAICallout = () => {
 					<N8nText size="large" class="mt-xs pl-2xs pr-2xs" color="text-dark">
 						{{ i18n.baseText('workflows.empty.easyAI') }}
 					</N8nText>
-				</N8nCard> -->
+				</N8nCard>
 			</div>
 		</template>
 		<template #filters="{ setKeyValue }">
