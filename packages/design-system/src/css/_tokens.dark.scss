@@ -1,7 +1,9 @@
 @use 'sass:math';
 
 @mixin theme {
-	--color-primary-l: 58%;
+	--color-primary: hsl(var(--prim-color-primary-h), var(--prim-color-primary-s), 58%);
+	--color-button-primary-background: var(--color-primary);
+
 	// Primary tokens
 	--color-danger: var(--prim-color-alt-k);
 
@@ -23,7 +25,7 @@
 	// Background
 	--color-background-dark: var(--prim-gray-70);
 	--color-background-medium: var(--prim-gray-540);
-	--color-background-base: var(--prim-gray-670);
+	--color-background-base: var(--prim-gray-820);
 	--color-background-light-base: var(--prim-gray-780);
 	--color-background-light: #1b171c;
 	--color-background-xlight: hsl(290, 10%, 13%);
@@ -467,6 +469,12 @@
 	--color-menu-background: var(--prim-gray-740);
 	--color-menu-hover-background: var(--prim-gray-670);
 	--color-menu-active-background: var(--prim-gray-670);
+
+	// Input focus
+	--input-focus-border-color: var(--color-primary);
+
+	// Button hover
+	--button-hover-font-color: var(--color-primary);
 }
 
 body[data-theme='dark'] {

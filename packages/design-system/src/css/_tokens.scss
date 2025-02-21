@@ -53,9 +53,7 @@
 @mixin theme {
 	--color-primary-h: var(--prim-color-primary-h);
 	--color-primary-s: var(--prim-color-primary-s);
-	--color-primary-l: 28%;
-
-	// Primary tokens
+	--color-primary-l: var(--prim-color-primary-l);
 
 	// Primary
 	--color-primary-shade-1: var(--prim-color-primary-shade-100);
@@ -671,6 +669,12 @@
 	--spacing-3xl: 4rem;
 	--spacing-4xl: 8rem;
 	--spacing-5xl: 16rem;
+
+	// Input focus
+	--input-focus-border-color: var(--color-primary);
+
+	// Button hover
+	--button-hover-font-color: var(--color-primary);
 }
 
 :root {

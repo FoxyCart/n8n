@@ -34,7 +34,7 @@
 	// Color Primary
 	--prim-color-primary-h: 290;
 	--prim-color-primary-s: 52%;
-	--prim-color-primary-l: 28%;
+	--prim-color-primary-l: 28%; // Change to 58% for dark mode
 
 	--prim-color-primary-shade-300: hsl(
 		var(--prim-color-primary-h),
@@ -472,4 +472,10 @@
 
 :root {
 	@include primitives;
+}
+
+@media (prefers-color-scheme: dark) {
+	:root {
+		--prim-color-primary-l: 58%;
+	}
 }
