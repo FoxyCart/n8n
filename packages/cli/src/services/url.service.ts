@@ -3,6 +3,7 @@ import { Service, Container } from 'typedi';
 
 interface HttpHeaders {
 	host?: string;
+	protocol?: string;
 	'x-forwarded-host'?: string;
 	'x-forwarded-proto'?: string;
 }
@@ -32,7 +33,8 @@ export class UrlService {
 			const host = headers.host;
 
 			if (forwardedHost ?? host) {
-				const protocol = headers['x-forwarded-proto'] ?? this.globalConfig.protocol;
+				const protocol =
+					headers.protocol ?? headers['x-forwarded-proto'] ?? this.globalConfig.protocol;
 				const finalHost = forwardedHost ?? host;
 				return `${protocol}://${finalHost}${this.globalConfig.path}`;
 			}
