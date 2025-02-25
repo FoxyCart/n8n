@@ -32,9 +32,12 @@ async function getWebhooks(functions: IExecuteFunctions | IHookFunctions) {
 		const response = await api.follow('fx:store').follow('fx:webhooks').get();
 
 		// @ts-expect-error fx:webhooks is not typed but does exist
-		const {
-			_embedded: { 'fx:webhooks': webhooks },
-		}: FoxyWebhooksResponse = await response.json();
+		const data: FoxyWebhooksResponse = await response.json();
+		const webhooks = data._embedded?.['fx:webhooks'];
+
+		if (!webhooks) {
+			throw new ApplicationError('Failed to get Foxy Webhooks');
+		}
 
 		return webhooks;
 	} catch (error) {
@@ -77,14 +80,13 @@ export async function createFoxyWebhook(
 
 	const response = await node.post(body);
 
-	const {
-		// @ts-expect-error should return a message like "webhook {number} created successfully" but is not typed
-		message,
-		// @ts-expect-error fx:errors is not typed but does exist
-		_embedded: { 'fx:errors': errors },
-	} = await response.json();
+	const data = await response.json();
 
-	if (!(message as string)?.includes('created successfully')) {
+	// @ts-expect-error message is not typed but does exist
+	if (!(data.message as string)?.includes('created successfully')) {
+		// @ts-expect-error fx:errors is not typed but does exist
+		const errors = data._embedded?.['fx:errors'] as Array<{ message: string }>;
+
 		if (errors?.[0]?.message) {
 			throw new ApplicationError(`Failed to create Foxy Webhook: ${errors[0].message}`);
 		}
