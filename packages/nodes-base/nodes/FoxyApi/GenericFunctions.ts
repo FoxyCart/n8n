@@ -12,7 +12,10 @@ export async function getApi(functions: IExecuteFunctions | IHookFunctions) {
 	try {
 		const credentials: FoxyCredentials = await functions.getCredentials('foxyJwtApi');
 
-		const api = new FoxySDK.Backend.API(credentials);
+		const api = new FoxySDK.Backend.API({
+			...credentials,
+			base: new URL(process.env.FOXY_API_BASE ?? 'https://api.foxy.io'),
+		});
 
 		return api;
 	} catch (error) {
@@ -74,8 +77,13 @@ export async function createFoxyWebhook(
 
 	const response = await node.post(body);
 
-	if (!response.ok) {
-		throw new ApplicationError('Failed to create Foxy Webhook');
+	// @ts-expect-error fx:errors is not typed but does exist
+	const {
+		_embedded: { 'fx:errors': errors },
+	} = await response.json();
+
+	if (errors?.[0]?.message) {
+		throw new ApplicationError(`Failed to create Foxy Webhook: ${errors[0].message}`);
 	}
 }
 
