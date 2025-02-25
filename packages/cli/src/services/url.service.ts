@@ -33,8 +33,7 @@ export class UrlService {
 			const host = headers.host;
 
 			if (forwardedHost ?? host) {
-				const protocol =
-					headers.protocol ?? headers['x-forwarded-proto'] ?? this.globalConfig.protocol;
+				const { protocol } = this.globalConfig;
 				const finalHost = forwardedHost ?? host;
 				return `${protocol}://${finalHost}${this.globalConfig.path}`;
 			}
