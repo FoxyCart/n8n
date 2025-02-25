@@ -1,14 +1,13 @@
-import {
-	NodeConnectionType,
-	type IWebhookFunctions,
-	type INodeType,
-	type INodeTypeDescription,
-	type IWebhookResponseData,
+import { ApplicationError, NodeConnectionType } from 'n8n-workflow';
+import type {
+	IWebhookFunctions,
+	INodeType,
+	INodeTypeDescription,
+	IWebhookResponseData,
+	IHookFunctions,
 } from 'n8n-workflow';
 
-// import { foxyApiRequest } from './GenericFunctions';
-
-// import { snakeCase } from 'change-case';
+import { createFoxyWebhook, getFoxyWebhookByUrl } from './GenericFunctions';
 
 export class FoxyApiTrigger implements INodeType {
 	description: INodeTypeDescription = {
@@ -18,13 +17,24 @@ export class FoxyApiTrigger implements INodeType {
 		group: ['trigger'],
 		version: 1,
 		subtitle: '={{$parameter["event"]}}',
-		description: 'Handle Foxy events via webhooks',
+		description:
+			'Receive webhooks from Foxy and trigger workflows when e-commerce events occur, such as new transactions and more. Use this node to automate responses to Foxy store activities.',
 		defaults: {
-			name: 'Foxy Trigger',
+			name: 'Foxy API Trigger',
 		},
 		inputs: [],
 		outputs: [NodeConnectionType.Main],
-		credentials: [],
+		credentials: [
+			{
+				name: 'foxyJwtApi',
+				required: true,
+				displayOptions: {
+					show: {
+						authentication: ['apiToken'],
+					},
+				},
+			},
+		],
 		webhooks: [
 			{
 				name: 'default',
@@ -35,19 +45,107 @@ export class FoxyApiTrigger implements INodeType {
 		],
 		properties: [
 			{
-				displayName: 'Event',
-				name: 'event',
+				displayName: 'Authentication',
+				name: 'authentication',
+				type: 'options',
+				options: [
+					{
+						name: 'API Token',
+						value: 'apiToken',
+					},
+					{
+						name: 'OAuth2',
+						value: 'oAuth2',
+					},
+				],
+				default: 'apiToken',
+			},
+			{
+				displayName: 'Resource',
+				name: 'resource',
 				type: 'options',
 				required: true,
 				default: '',
+				noDataExpression: true,
 				options: [
 					{
-						name: 'Transaction Refeed',
-						value: 'transaction/refeed',
+						name: 'Transaction',
+						value: 'transaction',
+					},
+					{
+						name: 'Customer',
+						value: 'customer',
+					},
+					{
+						name: 'Subscription',
+						value: 'subscription',
 					},
 				],
 			},
 		],
+	};
+
+	webhookMethods = {
+		default: {
+			async checkExists(this: IHookFunctions): Promise<boolean> {
+				try {
+					const nodeWebhookUrl = this.getNodeWebhookUrl('default') as string;
+					const resource = this.getNodeParameter('resource', 0) as string;
+
+					const foxyWebhook = await getFoxyWebhookByUrl(this, nodeWebhookUrl);
+
+					if (!foxyWebhook) {
+						console.log('Foxy Webhook not found, creating a new one.');
+						return false;
+					}
+
+					// Check for resource mismatch
+					if (foxyWebhook?.event_resource !== resource) {
+						console.log(
+							'Resource mismatch, the source of truth is the node parameter. Deleting the webhook and creating a new one.',
+						);
+						await foxyWebhook?._links.self.delete();
+						return false;
+					}
+
+					return true;
+				} catch (error) {
+					console.error(error);
+					return false;
+				}
+			},
+			async create(this: IHookFunctions): Promise<boolean> {
+				try {
+					const nodeWebhookUrl = this.getNodeWebhookUrl('default') as string;
+					const resource = this.getNodeParameter('resource', 0) as string;
+
+					await createFoxyWebhook(this, nodeWebhookUrl, resource);
+
+					return true;
+				} catch (error) {
+					console.error(error);
+					throw new ApplicationError('Failed to create Foxy Webhook');
+				}
+			},
+			async delete(this: IHookFunctions): Promise<boolean> {
+				try {
+					const nodeWebhookUrl = this.getNodeWebhookUrl('default') as string;
+					const foxyWebhook = await getFoxyWebhookByUrl(this, nodeWebhookUrl);
+
+					if (!foxyWebhook) {
+						console.log('Foxy Webhook not found, nothing to delete.');
+						return true;
+					}
+
+					await foxyWebhook._links.self.delete();
+
+					return true;
+				} catch (error) {
+					console.error(error);
+					throw new ApplicationError('Failed to delete Foxy Webhook');
+				}
+			},
+		},
 	};
 
 	async webhook(this: IWebhookFunctions): Promise<IWebhookResponseData> {

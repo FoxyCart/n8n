@@ -17,7 +17,8 @@ export class FoxyApi implements INodeType {
 		icon: 'file:foxy.svg',
 		group: ['transform'],
 		version: 1,
-		description: 'Consume Foxy API',
+		description:
+			'Interact with the Foxy API to manage e-commerce stores, customers, transactions, subscriptions, and more. Supports CRUD operations for all Foxy resources.',
 		defaults: {
 			name: 'Foxy',
 		},

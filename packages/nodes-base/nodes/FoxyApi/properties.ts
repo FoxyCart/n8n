@@ -1,6 +1,6 @@
 import { type INodeProperties } from 'n8n-workflow';
 
-export const uiProperties = [
+export const uiProperties: INodeProperties[] = [
 	{
 		displayName: 'URL',
 		name: 'url',
@@ -41,20 +41,20 @@ export const uiProperties = [
 	{
 		displayName: 'Query String',
 		name: 'query',
+		description: 'Additional Query String for Get Method',
 		type: 'string',
-		required: false,
+		default: '',
 		displayOptions: {
 			show: {
 				method: ['get'],
 			},
 		},
-		description: 'Additional Query String for Get Method.',
 	},
 	{
 		displayName: 'Request Body',
 		name: 'body',
 		type: 'string',
-		required: true,
+		default: '{}',
 		placeholder: 'Should be a Valid JSON',
 		displayOptions: {
 			show: {
@@ -65,4 +65,4 @@ export const uiProperties = [
 			rows: 4,
 		},
 	},
-] as INodeProperties[];
+];
