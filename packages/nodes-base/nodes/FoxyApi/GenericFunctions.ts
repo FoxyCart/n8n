@@ -77,8 +77,8 @@ export async function createFoxyWebhook(
 
 	const response = await node.post(body);
 
-	// @ts-expect-error fx:errors is not typed but does exist
 	const {
+		// @ts-expect-error fx:errors is not typed but does exist
 		_embedded: { 'fx:errors': errors },
 	} = await response.json();
 
