@@ -2,7 +2,7 @@ import * as FoxySDK from '@foxy.io/sdk';
 import { randomBytes } from 'crypto';
 import { type IHookFunctions, type IExecuteFunctions, ApplicationError } from 'n8n-workflow';
 
-import type { FoxyCredentials, FoxyWebhook } from './types';
+import type { FoxyCredentials, FoxyWebhook, FoxyWebhooksResponse } from './types';
 
 export async function generateEncryptionKey() {
 	return randomBytes(32).toString('hex');
@@ -33,7 +33,7 @@ async function getWebhooks(functions: IExecuteFunctions | IHookFunctions) {
 			_embedded: { 'fx:webhooks': webhooks },
 		}: FoxyWebhooksResponse = await response.json();
 
-		return webhooks as FoxyWebhook[];
+		return webhooks;
 	} catch (error) {
 		console.error(error);
 		throw new ApplicationError('Failed to get Foxy Webhooks');
