@@ -77,15 +77,17 @@ export async function createFoxyWebhook(
 
 	const response = await node.post(body);
 
-	console.log(await response.json());
-
 	const {
+		// @ts-expect-error should return a message like "webhook {number} created successfully" but is not typed
+		message,
 		// @ts-expect-error fx:errors is not typed but does exist
 		_embedded: { 'fx:errors': errors },
 	} = await response.json();
 
-	if (errors?.[0]?.message) {
-		throw new ApplicationError(`Failed to create Foxy Webhook: ${errors[0].message}`);
+	if (!(message as string)?.includes('created successfully')) {
+		if (errors?.[0]?.message) {
+			throw new ApplicationError(`Failed to create Foxy Webhook: ${errors[0].message}`);
+		}
 	}
 }
 
