@@ -8,13 +8,16 @@ export async function generateEncryptionKey() {
 	return randomBytes(32).toString('hex');
 }
 
-export async function getApi(functions: IExecuteFunctions | IHookFunctions) {
+export async function getApi(
+	functions: IExecuteFunctions | IHookFunctions,
+	options: { baseUrl?: string } = {},
+) {
 	try {
 		const credentials: FoxyCredentials = await functions.getCredentials('foxyJwtApi');
 
 		const api = new FoxySDK.Backend.API({
 			...credentials,
-			base: new URL(process.env.FOXY_API_BASE ?? 'https://api.foxy.io'),
+			base: new URL(options.baseUrl ?? process.env.FOXY_API_BASE ?? 'https://api.foxycart.com'),
 		});
 
 		return api;
@@ -94,7 +97,23 @@ export async function createFoxyWebhook(
 }
 
 export async function handleExecute(functions: IExecuteFunctions) {
-	const api = await getApi(functions);
+	const url = functions.getNodeParameter('url', 0) as string;
+	const isFullUrl = url.startsWith('http');
+	const inferedBaseUrl = isFullUrl ? `https://${new URL(url).hostname}` : process.env.FOXY_API_BASE;
+
+	let finalRequestUrl = isFullUrl ? url : `${inferedBaseUrl}${url}`;
+
+	if (!finalRequestUrl) {
+		throw new ApplicationError('Failed to get Foxy API request URL');
+	}
+
+	const api = await getApi(functions, {
+		baseUrl: inferedBaseUrl,
+	});
+
+	const method = functions.getNodeParameter('operation', 0) as Method;
+	const query = functions.getNodeParameter('query', 0, null) as string;
+	const body = functions.getNodeParameter('body', 0, null) as string;
 
 	type Options = {
 		method?: string;
@@ -106,15 +125,10 @@ export async function handleExecute(functions: IExecuteFunctions) {
 
 	const options: Options = {};
 
-	let url = functions.getNodeParameter('url', 0) as string;
-	const method = functions.getNodeParameter('method', 0) as Method;
-	const query = functions.getNodeParameter('query', 0, null) as string;
-	const body = functions.getNodeParameter('body', 0, null) as string;
-
 	options.method = method;
 
 	if (query) {
-		url += query;
+		finalRequestUrl += query;
 	}
 
 	if (body) {
@@ -122,12 +136,16 @@ export async function handleExecute(functions: IExecuteFunctions) {
 	}
 
 	const foxyResponse = await api
-		.fetch(url, options)
+		.fetch(finalRequestUrl, options)
 		.then((response: { json: () => any }) => {
 			return response.json();
 		})
 		.then((data: any) => {
 			return data;
+		})
+		.catch((error: any) => {
+			console.error(error);
+			throw new ApplicationError(`Failed to execute Foxy API request: ${error.message}`);
 		});
 
 	return foxyResponse;

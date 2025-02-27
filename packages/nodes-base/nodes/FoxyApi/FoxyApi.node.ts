@@ -20,7 +20,7 @@ export class FoxyApi implements INodeType {
 		description:
 			'Interact with the Foxy API to manage e-commerce stores, customers, transactions, subscriptions, and more. Supports CRUD operations for all Foxy resources.',
 		defaults: {
-			name: 'Foxy',
+			name: 'Foxy API',
 		},
 		inputs: [NodeConnectionType.Main],
 		outputs: [NodeConnectionType.Main],

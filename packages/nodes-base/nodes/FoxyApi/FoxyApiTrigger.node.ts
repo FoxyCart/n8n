@@ -61,23 +61,23 @@ export class FoxyApiTrigger implements INodeType {
 				default: 'apiToken',
 			},
 			{
-				displayName: 'Resource',
-				name: 'resource',
+				displayName: 'Trigger On',
+				name: 'triggerOn',
 				type: 'options',
 				required: true,
 				default: '',
 				noDataExpression: true,
 				options: [
 					{
-						name: 'Transaction',
+						name: 'Transaction Events',
 						value: 'transaction',
 					},
 					{
-						name: 'Customer',
+						name: 'Customer Events',
 						value: 'customer',
 					},
 					{
-						name: 'Subscription',
+						name: 'Subscription Events',
 						value: 'subscription',
 					},
 				],
@@ -90,7 +90,7 @@ export class FoxyApiTrigger implements INodeType {
 			async checkExists(this: IHookFunctions): Promise<boolean> {
 				try {
 					const nodeWebhookUrl = this.getNodeWebhookUrl('default') as string;
-					const resource = this.getNodeParameter('resource', 0) as string;
+					const triggerOn = this.getNodeParameter('triggerOn', 0) as string;
 
 					const foxyWebhook = await getFoxyWebhookByUrl(this, nodeWebhookUrl);
 
@@ -100,7 +100,7 @@ export class FoxyApiTrigger implements INodeType {
 					}
 
 					// Check for resource mismatch
-					if (foxyWebhook?.event_resource !== resource) {
+					if (foxyWebhook?.event_resource !== triggerOn) {
 						console.log(
 							'Resource mismatch, the source of truth is the node parameter. Deleting the webhook and creating a new one.',
 						);
@@ -117,9 +117,9 @@ export class FoxyApiTrigger implements INodeType {
 			async create(this: IHookFunctions): Promise<boolean> {
 				try {
 					const nodeWebhookUrl = this.getNodeWebhookUrl('default') as string;
-					const resource = this.getNodeParameter('resource', 0) as string;
+					const triggerOn = this.getNodeParameter('triggerOn', 0) as string;
 
-					await createFoxyWebhook(this, nodeWebhookUrl, resource);
+					await createFoxyWebhook(this, nodeWebhookUrl, triggerOn);
 
 					return true;
 				} catch (error) {
