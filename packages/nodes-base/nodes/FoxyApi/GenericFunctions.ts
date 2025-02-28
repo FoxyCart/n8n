@@ -112,8 +112,8 @@ export async function handleExecute(functions: IExecuteFunctions) {
 	});
 
 	const method = functions.getNodeParameter('operation', 0) as Method;
-	const query = functions.getNodeParameter('query', 0, null) as string;
 	const body = functions.getNodeParameter('body', 0, null) as string;
+	const sendQuery = functions.getNodeParameter('sendQuery', 0, false) as boolean;
 
 	type Options = {
 		method?: string;
@@ -127,8 +127,19 @@ export async function handleExecute(functions: IExecuteFunctions) {
 
 	options.method = method;
 
-	if (query) {
-		finalRequestUrl += query;
+	if (sendQuery) {
+		const query = functions.getNodeParameter('queryParameters', 0, null) as {
+			parameters: Array<{ name: string; value: string }>;
+		};
+
+		const queryParams = new URLSearchParams();
+		query.parameters.forEach((parameter) => {
+			queryParams.set(parameter.name, parameter.value);
+		});
+
+		console.log('queryParams', queryParams.toString());
+
+		finalRequestUrl += `?${queryParams.toString()}`;
 	}
 
 	if (body) {

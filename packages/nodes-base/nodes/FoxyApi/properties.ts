@@ -24,7 +24,8 @@ export const uiProperties: INodeProperties[] = [
 		name: 'url',
 		type: 'string',
 		default: '',
-		placeholder: 'Resource URL',
+		hint: "Explore available endpoints in the Foxy Admin's API Browser",
+		placeholder: 'e.g. /stores/12345/webhooks',
 		required: true,
 		description: 'Resource URL',
 		displayOptions: {
