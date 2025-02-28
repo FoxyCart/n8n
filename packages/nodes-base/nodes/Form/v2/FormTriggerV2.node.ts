@@ -31,12 +31,12 @@ const useWorkflowTimezone: INodeProperties = {
 };
 
 const descriptionV2: INodeTypeDescription = {
-	displayName: 'n8n Form Trigger',
+	displayName: 'Foxy Form Trigger',
 	name: 'formTrigger',
 	icon: 'file:form.svg',
 	group: ['trigger'],
 	version: [2, 2.1, 2.2],
-	description: 'Generate webforms in n8n and pass their responses to the workflow',
+	description: 'Generate webforms and pass their responses to the workflow',
 	defaults: {
 		name: 'On form submission',
 	},

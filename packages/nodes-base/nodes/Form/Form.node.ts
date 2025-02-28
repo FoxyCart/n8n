@@ -99,7 +99,7 @@ const completionProperties = updateDisplayOptions(
 	[
 		{
 			// eslint-disable-next-line n8n-nodes-base/node-param-display-name-miscased
-			displayName: 'On n8n Form Submission',
+			displayName: 'On Foxy Form Submission',
 			name: 'respondWith',
 			type: 'options',
 			default: 'text',
@@ -175,12 +175,12 @@ export class Form extends Node {
 	nodeInputData: INodeExecutionData[] = [];
 
 	description: INodeTypeDescription = {
-		displayName: 'n8n Form',
+		displayName: 'Foxy Form',
 		name: 'form',
 		icon: 'file:form.svg',
 		group: ['input'],
 		version: 1,
-		description: 'Generate webforms in n8n and pass their responses to the workflow',
+		description: 'Generate webforms and pass their responses to the workflow',
 		defaults: {
 			name: 'Form',
 		},
@@ -209,7 +209,7 @@ export class Form extends Node {
 		properties: [
 			{
 				// eslint-disable-next-line n8n-nodes-base/node-param-display-name-miscased
-				displayName: 'An n8n Form Trigger node must be set up before this node',
+				displayName: 'A Foxy Form Trigger node must be set up before this node',
 				name: 'triggerNotice',
 				type: 'notice',
 				default: '',
