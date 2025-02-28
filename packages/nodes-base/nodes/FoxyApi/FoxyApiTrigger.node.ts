@@ -16,7 +16,7 @@ export class FoxyApiTrigger implements INodeType {
 		icon: 'file:foxy.svg',
 		group: ['trigger'],
 		version: 1,
-		subtitle: '={{$parameter["event"]}}',
+		subtitle: '={{$parameter["triggerOn"]}}',
 		description:
 			'Receive webhooks from Foxy and trigger workflows when e-commerce events occur, such as new transactions and more. Use this node to automate responses to Foxy store activities.',
 		defaults: {
