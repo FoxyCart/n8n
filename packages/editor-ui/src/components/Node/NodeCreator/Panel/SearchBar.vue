@@ -90,7 +90,7 @@ defineExpose({
 	border-radius: 4px;
 
 	&:focus-within {
-		border-color: var(--color-secondary);
+		border-color: var(--color-primary);
 	}
 }
 
