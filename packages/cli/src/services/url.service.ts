@@ -1,12 +1,6 @@
+import HttpHeadersService from '@/http-headers';
 import { GlobalConfig } from '@n8n/config';
-import { Service, Container } from 'typedi';
-
-interface HttpHeaders {
-	host?: string;
-	protocol?: string;
-	'x-forwarded-host'?: string;
-	'x-forwarded-proto'?: string;
-}
+import { Service, Container } from '@n8n/di';
 
 @Service()
 export class UrlService {
@@ -28,7 +22,7 @@ export class UrlService {
 
 	private generateBaseUrl(): string {
 		try {
-			const headers: HttpHeaders = Container.get('httpRequestHeaders') ?? {};
+			const headers = Container.get(HttpHeadersService);
 			const forwardedHost = headers['x-forwarded-host'];
 			const host = headers.host;
 

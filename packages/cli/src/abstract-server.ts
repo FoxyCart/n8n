@@ -22,6 +22,7 @@ import { WaitingWebhooks } from '@/webhooks/waiting-webhooks';
 import { createWebhookHandlerFor } from '@/webhooks/webhook-request-handler';
 
 import { ServiceUnavailableError } from './errors/response-errors/service-unavailable.error';
+import HttpHeadersService from './http-headers';
 
 @Service()
 export abstract class AbstractServer {
@@ -106,7 +107,9 @@ export abstract class AbstractServer {
 		this.app.use(rawBodyReader);
 
 		this.app.use((req, _res, next) => {
-			Container.set('httpRequestHeaders', req.headers);
+			const headersService = new HttpHeadersService(req.headers);
+
+			Container.set(HttpHeadersService, headersService);
 			next();
 		});
 	}
