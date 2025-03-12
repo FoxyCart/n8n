@@ -43,7 +43,7 @@ export const looseTypeValidationProperty: INodeProperties = {
 };
 
 export const appendAttributionOption: INodeProperties = {
-	displayName: 'Append n8n Attribution',
+	displayName: 'Append Foxy Automations Attribution',
 	name: 'appendAttribution',
 	type: 'boolean',
 	default: true,
