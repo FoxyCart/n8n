@@ -40,7 +40,6 @@ import * as utils from '@/utils';
 
 import { CredentialsService } from './credentials.service';
 import { EnterpriseCredentialsService } from './credentials.service.ee';
-
 @RestController('/credentials')
 export class CredentialsController {
 	constructor(

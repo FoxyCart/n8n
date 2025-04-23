@@ -18,10 +18,10 @@ export class CredentialsRepository extends Repository<CredentialsEntity> {
 		super(CredentialsEntity, dataSource.manager);
 	}
 
-	async findStartingWith(credentialName: string) {
+	async findStartingWith(credentialName: string, projectId?: string) {
 		return await this.find({
 			select: ['name'],
-			where: { name: Like(`${credentialName}%`) },
+			where: { name: Like(`${credentialName}%`), shared: { projectId } },
 		});
 	}
 

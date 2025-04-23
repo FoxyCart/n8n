@@ -10,18 +10,28 @@ export class NamingService {
 		private readonly credentialsRepository: CredentialsRepository,
 	) {}
 
-	async getUniqueWorkflowName(requestedName: string) {
-		return await this.getUniqueName(requestedName, 'workflow');
+	async getUniqueWorkflowName(requestedName: string, projectId?: string) {
+		return await this.getUniqueName(requestedName, 'workflow', projectId);
 	}
 
-	async getUniqueCredentialName(requestedName: string) {
-		return await this.getUniqueName(requestedName, 'credential');
+	async getUniqueCredentialName(requestedName: string, projectId?: string) {
+		return await this.getUniqueName(requestedName, 'credential', projectId);
 	}
 
-	private async getUniqueName(requestedName: string, entity: 'workflow' | 'credential') {
+	private async getUniqueName(
+		requestedName: string,
+		entity: 'workflow' | 'credential',
+		projectId?: string,
+	) {
 		const repository = entity === 'workflow' ? this.workflowRepository : this.credentialsRepository;
 
-		const found = await repository.findStartingWith(requestedName);
+		let found: Array<{ name: string }>;
+
+		if (projectId) {
+			found = await repository.findStartingWith(requestedName, projectId);
+		} else {
+			found = [];
+		}
 
 		if (found.length === 0) return requestedName;
 

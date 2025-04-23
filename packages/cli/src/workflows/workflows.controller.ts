@@ -238,9 +238,10 @@ export class WorkflowsController {
 
 	@Get('/new')
 	async getNewName(req: WorkflowRequest.NewName) {
+		const projectId = req.query.projectId;
 		const requestedName = req.query.name ?? this.globalConfig.workflows.defaultName;
 
-		const name = await this.namingService.getUniqueWorkflowName(requestedName);
+		const name = await this.namingService.getUniqueWorkflowName(requestedName, projectId);
 		return { name };
 	}
 
