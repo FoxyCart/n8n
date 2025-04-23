@@ -169,10 +169,30 @@ export class CredentialsController {
 		_: Response,
 		@Body payload: CreateCredentialDto,
 	) {
-		const newCredential = await this.credentialsService.createUnmanagedCredential(
-			payload,
-			req.user,
-		);
+		let newCredential: Awaited<
+			ReturnType<typeof this.credentialsService.createUnmanagedCredential>
+		>;
+
+		if (payload.type === 'foxyJwtApi' && payload.isManaged) {
+			// Get the existing managed credentials
+			const allCredentials = await this.credentialsService.getMany(req.user, {
+				includeData: true,
+			});
+
+			console.log(JSON.stringify(allCredentials, null, 2));
+
+			const existingManagedCredential = allCredentials.find(
+				(cred) => cred.type === 'foxyJwtApi' && cred.isManaged,
+			);
+
+			if (existingManagedCredential) {
+				throw new BadRequestError('A managed Foxy credential already exists for this user.');
+			}
+
+			newCredential = await this.credentialsService.createManagedCredential(payload, req.user);
+		} else {
+			newCredential = await this.credentialsService.createUnmanagedCredential(payload, req.user);
+		}
 
 		const project = await this.sharedCredentialsRepository.findCredentialOwningProject(
 			newCredential.id,
@@ -274,6 +294,11 @@ export class CredentialsController {
 			throw new NotFoundError(
 				'Credential to be deleted not found. You can only removed credentials owned by you',
 			);
+		}
+
+		// Prevent deletion of managed credentials for foxyJwtApi
+		if (credential.type === 'foxyJwtApi' && credential.isManaged) {
+			throw new BadRequestError('This credential is managed by Foxy and cannot be deleted');
 		}
 
 		await this.credentialsService.delete(req.user, credential.id);
