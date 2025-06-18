@@ -117,7 +117,10 @@ export class FoxyApiTrigger implements INodeType {
 			async create(this: IHookFunctions): Promise<boolean> {
 				try {
 					const nodeWebhookUrl = this.getNodeWebhookUrl('default') as string;
-					const triggerOn = this.getNodeParameter('triggerOn', 0) as string;
+					const triggerOn = this.getNodeParameter('triggerOn', 0) as
+						| 'transaction'
+						| 'customer'
+						| 'subscription';
 
 					await createFoxyWebhook(this, nodeWebhookUrl, triggerOn);
 
