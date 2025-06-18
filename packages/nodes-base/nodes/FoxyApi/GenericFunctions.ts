@@ -15,8 +15,6 @@ export async function getApi(
 	try {
 		const credentials: FoxyCredentials = await functions.getCredentials('foxyJwtApi');
 
-		// console.log('Credentials', credentials); // TODO: remove after testing
-
 		const api = new FoxySDK.Backend.API({
 			...credentials,
 			base: new URL(options.baseUrl ?? process.env.FOXY_API_BASE ?? 'https://api.foxycart.com'),
@@ -74,24 +72,24 @@ export async function createFoxyWebhook(
 	// @ts-expect-error fx:webhooks is not typed but does exist
 	const node = api.follow('fx:store').follow('fx:webhooks');
 
-	// const transactionZoom =
-	// 	'zoom=applied_taxes,billing_addresses,custom_fields,customer,discounts,items,items:item_category,items:item_options,payments,shipments';
-	// const customerZoom =
-	// 	'zoom=default_billing_address,default_shipping_address,default_payment_method,customer_addresses';
-	// const subscriptionZoom =
-	// 	'zoom=customer,customer:default_billing_address,customer:default_shipping_address,transaction_template,transaction_template:discounts,transaction_template:items,transaction_template:items:item_category,transaction_template:items:item_options,transaction_template:applied_coupon_codes,transaction_template:custom_fields';
+	const transactionZoom =
+		'zoom=applied_taxes,billing_addresses,custom_fields,customer,discounts,items,items:item_category,items:item_options,payments,shipments';
+	const customerZoom =
+		'zoom=default_billing_address,default_shipping_address,default_payment_method,customer_addresses';
+	const subscriptionZoom =
+		'zoom=customer,customer:default_billing_address,customer:default_shipping_address,transaction_template,transaction_template:discounts,transaction_template:items,transaction_template:items:item_category,transaction_template:items:item_options,transaction_template:applied_coupon_codes,transaction_template:custom_fields';
 
 	const body = {
 		format: 'json',
 		name: 'Foxy Automations Webhook',
 		event_resource: resource,
 		url: webhookUrl,
-		// query:
-		// 	resource === 'transaction'
-		// 		? transactionZoom
-		// 		: resource === 'customer'
-		// 			? customerZoom
-		// 			: subscriptionZoom,
+		query:
+			resource === 'transaction'
+				? transactionZoom
+				: resource === 'customer'
+					? customerZoom
+					: subscriptionZoom,
 		is_active: 1,
 		encryption_key: encryptionKey,
 	};
