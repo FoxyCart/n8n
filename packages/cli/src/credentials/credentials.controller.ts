@@ -12,6 +12,7 @@ import type { ICredentialDataDecryptedObject } from 'n8n-workflow';
 import { deepCopy } from 'n8n-workflow';
 import { z } from 'zod';
 
+import type { CredentialsEntity } from '@/databases/entities/credentials-entity';
 import { SharedCredentials } from '@/databases/entities/shared-credentials';
 import { ProjectRelationRepository } from '@/databases/repositories/project-relation.repository';
 import { SharedCredentialsRepository } from '@/databases/repositories/shared-credentials.repository';
@@ -40,6 +41,7 @@ import * as utils from '@/utils';
 
 import { CredentialsService } from './credentials.service';
 import { EnterpriseCredentialsService } from './credentials.service.ee';
+import { ManagedCredentialsService } from './managed-credentials.service';
 
 @RestController('/credentials')
 export class CredentialsController {
@@ -47,6 +49,7 @@ export class CredentialsController {
 		private readonly globalConfig: GlobalConfig,
 		private readonly credentialsService: CredentialsService,
 		private readonly enterpriseCredentialsService: EnterpriseCredentialsService,
+		private readonly managedCredentialsService: ManagedCredentialsService,
 		private readonly namingService: NamingService,
 		private readonly license: License,
 		private readonly logger: Logger,
@@ -169,17 +172,21 @@ export class CredentialsController {
 		_: Response,
 		@Body payload: CreateCredentialDto,
 	) {
+		const token = req.headers.authorization?.split(' ')[1]; // Format: Bearer <token>
+
 		let newCredential: Awaited<
 			ReturnType<typeof this.credentialsService.createUnmanagedCredential>
 		>;
 
 		if (payload.type === 'foxyJwtApi' && payload.isManaged) {
+			if (token !== this.globalConfig.foxySecretToken) {
+				throw new ForbiddenError('Invalid or missing token');
+			}
+
 			// Get the existing managed credentials
 			const allCredentials = await this.credentialsService.getMany(req.user, {
 				includeData: true,
 			});
-
-			console.log(JSON.stringify(allCredentials, null, 2));
 
 			const existingManagedCredential = allCredentials.find(
 				(cred) => cred.type === 'foxyJwtApi' && cred.isManaged,
@@ -216,8 +223,15 @@ export class CredentialsController {
 		const {
 			body,
 			user,
+			headers,
 			params: { credentialId },
 		} = req;
+
+		const token = headers.authorization?.split(' ')[1]; // Format: Bearer <token>
+
+		if (token !== this.globalConfig.foxySecretToken) {
+			throw new ForbiddenError('Invalid or missing token');
+		}
 
 		const credential = await this.sharedCredentialsRepository.findCredentialForUser(
 			credentialId,
@@ -235,11 +249,16 @@ export class CredentialsController {
 			);
 		}
 
-		if (credential.isManaged) {
+		if (
+			credential.isManaged &&
+			(credential.type !== 'foxyJwtApi' ||
+				(credential.type === 'foxyJwtApi' && token !== this.globalConfig.foxySecretToken))
+		) {
 			throw new BadRequestError('Managed credentials cannot be updated');
 		}
 
 		const decryptedData = this.credentialsService.decrypt(credential, true);
+
 		// We never want to allow users to change the oauthTokenData
 		delete body.data?.oauthTokenData;
 		const preparedCredentialData = await this.credentialsService.prepareUpdateData(
@@ -273,6 +292,24 @@ export class CredentialsController {
 		const scopes = await this.credentialsService.getCredentialScopes(req.user, credential.id);
 
 		return { ...rest, scopes };
+	}
+
+	@Get('/managed/integrity')
+	async getManagedCredentialsIntegrity(req: CredentialRequest.GetMany) {
+		const token = req.headers.authorization?.split(' ')[1]; // Format: Bearer <token>
+
+		if (token !== this.globalConfig.foxySecretToken) {
+			throw new ForbiddenError('Invalid or missing token');
+		}
+
+		const credentials = (await this.sharedCredentialsRepository.findAllCredentialsForUser(
+			req.user,
+			['credential:read'],
+		)) as unknown as CredentialsEntity[];
+
+		return {
+			foxyJwtApi: this.managedCredentialsService.checkFoxyJwtApiCredentialsIntegrity(credentials),
+		};
 	}
 
 	@Delete('/:credentialId')
