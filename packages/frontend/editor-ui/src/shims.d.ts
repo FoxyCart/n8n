@@ -14,6 +14,8 @@ declare global {
 			PROD: boolean;
 			NODE_ENV: 'development' | 'production';
 			VUE_APP_URL_BASE_API: string;
+			VUE_APP_N8N_OAUTH_CLIENT_ID: string;
+			VUE_APP_FOXY_OIDC_BASE: string;
 		};
 	}
 

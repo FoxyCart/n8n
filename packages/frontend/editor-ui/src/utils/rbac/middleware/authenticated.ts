@@ -10,10 +10,29 @@ export const authenticatedMiddleware: RouterMiddleware<AuthenticatedPermissionOp
 ) => {
 	const valid = isAuthenticated(options);
 	if (!valid) {
-		const redirect =
-			to.query.redirect ??
-			encodeURIComponent(`${window.location.pathname}${window.location.search}`);
+		const {
+			VUE_APP_N8N_OAUTH_CLIENT_ID: N8N_OAUTH_CLIENT_ID,
+			VUE_APP_FOXY_OIDC_BASE: FOXY_OIDC_BASE,
+		} = import.meta.env;
 
-		window.location.href = `/signin?redirect=${redirect}`;
+		if (!N8N_OAUTH_CLIENT_ID || !FOXY_OIDC_BASE) {
+			throw new Error('Authentication is not configured correctly');
+		}
+
+		const host = window.location.host;
+		// Extract the store id from the host
+		const store_id = host.split('.')[0].replace('store-', '');
+
+		// Generate redirect URL
+		const redirectParameters = new URLSearchParams();
+		redirectParameters.set('response_type', 'code');
+		redirectParameters.set('client_id', N8N_OAUTH_CLIENT_ID);
+		redirectParameters.set('scope', `store_full_access store_id_${store_id}`);
+		redirectParameters.set('state', 'store');
+
+		const redirectURL = new URL('./authorize', FOXY_OIDC_BASE);
+		const fullRedirectURL = redirectURL.toString() + '?' + redirectParameters.toString();
+
+		window.location.href = fullRedirectURL;
 	}
 };
