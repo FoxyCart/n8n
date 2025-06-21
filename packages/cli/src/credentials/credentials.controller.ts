@@ -172,15 +172,15 @@ export class CredentialsController {
 		_: Response,
 		@Body payload: CreateCredentialDto,
 	) {
-		const token = req.headers.authorization?.split(' ')[1]; // Format: Bearer <token>
+		const secret = req.headers.authorization?.split(' ')[1]; // Format: Bearer <token>
 
 		let newCredential: Awaited<
 			ReturnType<typeof this.credentialsService.createUnmanagedCredential>
 		>;
 
 		if (payload.type === 'foxyJwtApi' && payload.isManaged) {
-			if (token !== this.globalConfig.foxySecretToken) {
-				throw new ForbiddenError('Invalid or missing token');
+			if (secret !== this.globalConfig.managementSecret) {
+				throw new ForbiddenError('Unauthorized');
 			}
 
 			// Get the existing managed credentials
@@ -227,10 +227,10 @@ export class CredentialsController {
 			params: { credentialId },
 		} = req;
 
-		const token = headers.authorization?.split(' ')[1]; // Format: Bearer <token>
+		const secret = headers.authorization?.split(' ')[1]; // Format: Bearer <token>
 
-		if (token !== this.globalConfig.foxySecretToken) {
-			throw new ForbiddenError('Invalid or missing token');
+		if (secret !== this.globalConfig.managementSecret) {
+			throw new ForbiddenError('Unauthorized');
 		}
 
 		const credential = await this.sharedCredentialsRepository.findCredentialForUser(
@@ -252,7 +252,7 @@ export class CredentialsController {
 		if (
 			credential.isManaged &&
 			(credential.type !== 'foxyJwtApi' ||
-				(credential.type === 'foxyJwtApi' && token !== this.globalConfig.foxySecretToken))
+				(credential.type === 'foxyJwtApi' && secret !== this.globalConfig.managementSecret))
 		) {
 			throw new BadRequestError('Managed credentials cannot be updated');
 		}
@@ -296,10 +296,10 @@ export class CredentialsController {
 
 	@Get('/managed/integrity')
 	async getManagedCredentialsIntegrity(req: CredentialRequest.GetMany) {
-		const token = req.headers.authorization?.split(' ')[1]; // Format: Bearer <token>
+		const secret = req.headers.authorization?.split(' ')[1]; // Format: Bearer <token>
 
-		if (token !== this.globalConfig.foxySecretToken) {
-			throw new ForbiddenError('Invalid or missing token');
+		if (secret !== this.globalConfig.managementSecret) {
+			throw new ForbiddenError('Unauthorized');
 		}
 
 		const credentials = (await this.sharedCredentialsRepository.findAllCredentialsForUser(

@@ -98,8 +98,8 @@ export class GlobalConfig {
 	protocol: 'http' | 'https' = 'http';
 
 	/** Secret token for Foxy managed features */
-	@Env('FOXY_SECRET_TOKEN')
-	foxySecretToken: string;
+	@Env('N8N_MANAGEMENT_SECRET')
+	managementSecret: string;
 
 	@Nested
 	endpoints: EndpointsConfig;
