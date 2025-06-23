@@ -67,7 +67,7 @@ export class ManagedCredentialsService {
 		const isClientIDValid = clientId.startsWith('foxy_internal_n8n_');
 
 		// For minimum 36 characters
-		const tokenRegex = /^[a-zA-Z0-9]{32,}$/;
+		const tokenRegex = /^[a-zA-Z0-9]$/;
 		const isClientSecretValid = tokenRegex.test(clientSecret);
 		const isRefreshTokenValid = tokenRegex.test(refreshToken);
 
