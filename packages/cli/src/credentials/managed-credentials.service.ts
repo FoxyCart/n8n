@@ -23,7 +23,7 @@ export class ManagedCredentialsService {
 	checkFoxyJwtApiCredentialsIntegrity(credentials: CredentialsEntity[]): {
 		status: (typeof CredentialsIntegrityStatus)[keyof typeof CredentialsIntegrityStatus];
 		id?: string;
-		message: string;
+		details: string[];
 	} {
 		const managedCredentials = credentials.filter((credential) => credential.isManaged);
 		const foxyJwtApiCredentials = managedCredentials.find(
@@ -33,7 +33,7 @@ export class ManagedCredentialsService {
 		if (!foxyJwtApiCredentials) {
 			return {
 				status: CredentialsIntegrityStatus.MISSING,
-				message: 'No managed foxyJwtApi credentials found',
+				details: ['No managed foxyJwtApi credentials found'],
 			};
 		}
 
@@ -43,7 +43,7 @@ export class ManagedCredentialsService {
 			return {
 				status: CredentialsIntegrityStatus.EXPIRED,
 				id: foxyJwtApiCredentials.id,
-				message: 'Credentials are older than 3 months',
+				details: ['Credentials are older than 3 months'],
 			};
 		}
 
@@ -53,7 +53,7 @@ export class ManagedCredentialsService {
 			return {
 				status: CredentialsIntegrityStatus.INVALID,
 				id: foxyJwtApiCredentials.id,
-				message: 'Decrypted data is empty',
+				details: ['Decrypted data is empty'],
 			};
 		}
 
@@ -67,39 +67,33 @@ export class ManagedCredentialsService {
 		const isClientIDValid = clientId.startsWith('foxy_internal_n8n_');
 
 		// For minimum 36 characters
-		const tokenRegex = /^[a-zA-Z0-9]$/;
+		const tokenRegex = /^[a-zA-Z0-9]{30,}$/;
 		const isClientSecretValid = tokenRegex.test(clientSecret);
 		const isRefreshTokenValid = tokenRegex.test(refreshToken);
 
-		let message = 'Credentials are valid';
+		let details = ['Credentials are valid'];
 
-		const isValid =
-			isClientIDValid &&
-			isClientSecretValid &&
-			isRefreshTokenValid &&
-			clientId !== '' &&
-			clientSecret !== '' &&
-			refreshToken !== '';
+		const isValid = isClientIDValid && isClientSecretValid && isRefreshTokenValid;
+
+		if (!isValid) {
+			details = [];
+		}
 
 		if (!isClientIDValid) {
-			message = 'Client ID does not start with "foxy_internal_n8n_"';
+			details.push('Client ID does not match the expected format');
 		}
 		if (!isClientSecretValid) {
-			message = 'Client secret does not match the expected format';
+			details.push('Client secret does not match the expected format');
 		}
 
 		if (!isRefreshTokenValid) {
-			message = 'Refresh token does not match the expected format';
-		}
-
-		if (clientId === '' || clientSecret === '' || refreshToken === '') {
-			message = 'Client ID, client secret, or refresh token is empty';
+			details.push('Refresh token does not match the expected format');
 		}
 
 		return {
 			status: isValid ? CredentialsIntegrityStatus.VALID : CredentialsIntegrityStatus.INVALID,
 			id: foxyJwtApiCredentials.id,
-			message,
+			details,
 		};
 	}
 }
